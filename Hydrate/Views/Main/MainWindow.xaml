@@ -1,0 +1,24 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:av="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ed="clr-namespace:Microsoft.Expression.Shapes;assembly=Microsoft.Expression.Drawing"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Name="_this"
+        mc:Ignorable="av"
+        x:Class="Hydrate.Views.Main.MainWindow"
+        Width="Auto" Height="729" MinWidth="400" MinHeight="300" WindowStyle="None" av:DesignWidth="1040.317" AllowsTransparency="True" ResizeMode="CanResize" BorderThickness="1,1,1,1" BorderBrush="Black">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome
+        CaptionHeight="0"
+        ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
+
+    <Grid Height="Auto" Width="Auto" Background="White">
+
+        <Label Content="Hydrate" Background="#FF1E9AFF" FontFamily="Comic Sans MS" FontSize="22" HorizontalContentAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1" Foreground="White" Width="Auto" HorizontalAlignment="Stretch" MouseDown="Label_MouseDown" MouseDoubleClick="Label_MouseDoubleClick" />
+
+        <ed:Arc StrokeThickness="40" StartAngle="-120" EndAngle="120" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="Black" Stretch="None" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,200,0,0" />
+    </Grid>
+</Window>
