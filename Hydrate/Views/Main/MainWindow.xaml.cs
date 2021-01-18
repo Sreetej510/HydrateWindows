@@ -30,16 +30,14 @@ namespace Hydrate.Views.Main
             }
         }
 
-        private void Label_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void Minimize_Clicked(object sender, RoutedEventArgs e)
         {
-            if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-            }
-            else
-            {
-                WindowState = WindowState.Maximized;
-            }
+            WindowState = WindowState.Minimized;
+        }
+
+        private void Close_Clicked(object sender, RoutedEventArgs e)
+        {
+            Hide();
         }
     }
 }
