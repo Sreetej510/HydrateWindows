@@ -14,21 +14,22 @@
 
   <ItemGroup>
     <None Remove="Resources\Icons\close_black.png" />
+    <None Remove="Resources\Icons\edit_black.png" />
     <None Remove="Resources\Icons\menu_white.png" />
     <None Remove="Resources\Icons\minimize_black.png" />
     <None Remove="Resources\Icons\more_vert_black.png" />
+    <None Remove="Resources\Icons\remove_black.png" />
+    <None Remove="Resources\Icons\settings_black.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Icons\edit_black.png" />
+    <Resource Include="Resources\Icons\remove_black.png" />
+    <Resource Include="Resources\Icons\settings_black.png" />
     <Resource Include="Resources\Icons\close_black.png" />
     <Resource Include="Resources\Icons\menu_white.png" />
     <Resource Include="Resources\Icons\minimize_black.png" />
     <Resource Include="Resources\Icons\more_vert_black.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
   <ItemGroup>

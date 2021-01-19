@@ -1,0 +1,29 @@
+﻿<Window x:Class="Hydrate.Views.Main.EditWindow"
+        x:Name="window"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      WindowStartupLocation="CenterScreen"
+      Height="250" Width="350" WindowStyle="None" AllowsTransparency="True" BorderThickness="1,1,1,1" BorderBrush="Black" ResizeMode="NoResize">
+
+    <Grid>
+        <StackPanel Background="Black" Opacity="0.3" />
+        <Grid Background="White">
+            <Label Content="Edit" FontSize="22" Background="DeepSkyBlue" VerticalAlignment="Top" HorizontalContentAlignment="Center" FontFamily="Comic Sans MS" MouseDown="Label_MouseDown" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="20,60,0,0">
+                <Label Content="Quantity  -  " FontFamily="Comic Sans MS" FontSize="20" />
+                <TextBox Text="{Binding Quantity}" MaxLength="4" Width="100" FontSize="20" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
+                <Label Content="ml" FontFamily="Comic Sans MS" FontSize="20" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="20,120,0,0">
+                <Label Content="Time        -  " FontFamily="Comic Sans MS" FontSize="20" />
+                <TextBox MaxLength="2" Width="38" Text="{Binding Hour}" FontSize="20" Margin="0,0,5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                <Label Content=":" FontFamily="Comic Sans MS" FontSize="20" />
+                <TextBox MaxLength="2" Width="38" Text="{Binding Minutes}" FontSize="20" Margin="5,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="40" Margin="0,185,0,0" VerticalAlignment="Top" HorizontalAlignment="Center">
+                <Button FontFamily="Comic Sans MS" Content="Done" FontSize="20" Width="100" Margin="0,0,25,0" Command="{Binding DoneClicked}" />
+                <Button FontFamily="Comic Sans MS" Content="Cancel" FontSize="20" Width="100" Margin="25,0,0,0" Click="CancelClicked" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

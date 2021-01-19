@@ -7,11 +7,7 @@
 
     <Grid Height="Auto" Width="Auto" Background="White">
 
-        <Label Content="Hydrate" Background="#FF1E9AFF" FontFamily="Comic Sans MS" FontSize="20" HorizontalContentAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1" Foreground="White" Width="Auto" HorizontalAlignment="Stretch" MouseDown="Label_MouseDown" />
-
-        <Image  HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="1" Width="40" Height="40" Margin="10,0,0,0" Source="/Resources/Icons/menu_white.png" />
-        <!--add menu command here-->
-        <Button HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="2" Width="40" Height="40" Margin="10,0,0,0" Opacity="0" Command="" />
+        <Label Content="Hydrate" Background="#1E9AFF" FontFamily="Comic Sans MS" FontSize="20" HorizontalContentAlignment="Center" VerticalAlignment="Top" Panel.ZIndex="1" Foreground="White" Width="Auto" HorizontalAlignment="Stretch" MouseDown="Label_MouseDown" />
 
         <Button Width="35" Height="35" Margin="0,0,47,0" HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="2" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" Click="Minimize_Clicked">
             <Image Source="/Resources/Icons/minimize_black.png" Margin="0,-5,0,0" />
@@ -23,66 +19,73 @@
 
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100,120,0,0">
             <ed:Arc StrokeThickness="50" StartAngle="-120" EndAngle="120" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="#FFBABEC0" Stretch="None" />
-            <ed:Arc StrokeThickness="50" StartAngle="-120" EndAngle="20" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="#FF01A5FA" Stretch="None">
+            <ed:Arc StrokeThickness="50" StartAngle="-120" EndAngle="{Binding EndAngle}" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="#FF01A5FA" Stretch="None">
                 <ed:Arc.Effect>
                     <DropShadowEffect BlurRadius="10" ShadowDepth="2" />
                 </ed:Arc.Effect>
             </ed:Arc>
-            <Label Content="Label ml" FontSize="50" FontFamily="Comic Sans MS" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <Label Content="Label L" FontSize="30" FontFamily="Comic Sans MS" Margin="0,0,10,40" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+            <Label Content="{Binding TotalDrank}" ContentStringFormat="{} {0} ml" FontSize="50" FontFamily="Comic Sans MS" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Label Content="{Binding Goal}" ContentStringFormat="{}{0:F2} L" FontSize="30" FontFamily="Comic Sans MS" Margin="0,0,10,40" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
         </Grid>
 
         <!--add Image to buttons here-->
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Width="400" Margin="100,500,0,0">
-            <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" />
+            <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" />
             <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" />
             <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" />
             <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" />
         </StackPanel>
 
-        <!-- ItemSource Binding-->
-        <ListView ItemsSource="{Binding DrinkingList}" HorizontalAlignment="Right" Background="AliceBlue" Width="500" Margin="0,50,20,20">
+        <ListView ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding PopulateList.DrinkingList}" HorizontalAlignment="Right" Background="AliceBlue" Width="500" Margin="0,50,20,20" AlternationCount="2" SelectedItem="{Binding SelectedItem}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="#eeeeee" />
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#FFFFFF" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <!-- Edit Button Binding-->
+                    <MenuItem  Height="30" Header="Edit" Command="{Binding EditItem}">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Icons/edit_black.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!-- Delete Button Binding-->
+                    <MenuItem  Height="30" Header="Remove" Command="{Binding DeleteItem}">
+                        <MenuItem.Icon>
+                            <Image Source="/Resources/Icons/remove_black.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
 
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Height="60" Margin="5">
+
+                    <Grid Height="60" Width="480">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="8*" />
-                            <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
 
-                        <!-- Image Binding-->
-                        <Image Grid.Column="0" Source="/Resources/Icons/minimize_black.png" />
+                        <Image Grid.Column="0" Source="{Binding ImageSource}" />
 
-                        <!-- Label Text and Time Binding-->
                         <Grid Grid.Column="1">
-                            <Label Content="Quantity" FontSize="25" VerticalAlignment="Center" />
-                            <Label Content="HH:MM am" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0,0,15,0" />
+                            <Label Content="{Binding QuantityDrank}" FontSize="25" VerticalAlignment="Center" ContentStringFormat="{}{0} ml" />
+                            <Label Content="{Binding DrankTime}" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0,0,20,10" ContentStringFormat="{}{0:hh\:mm tt}" />
                         </Grid>
-
-                        <Button Grid.Column="2" Background="{x:Null}" BorderBrush="{x:Null}" Padding="0,10">
-                            <Image Source="/Resources/Icons/more_vert_black.png" />
-                            <Button.ContextMenu>
-                                <ContextMenu>
-                                    <!-- Edit Button Binding-->
-                                    <MenuItem Header="Edit" Command="">
-                                        <MenuItem.Icon>
-                                            <!-- Image source-->
-                                            <Image />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-
-                                    <!-- Delete Button Binding-->
-                                    <MenuItem Header="Remove" Command="">
-                                        <MenuItem.Icon>
-                                            <!-- Image source-->
-                                            <Image />
-                                        </MenuItem.Icon>
-                                    </MenuItem>
-                                </ContextMenu>
-                            </Button.ContextMenu>
-                        </Button>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
