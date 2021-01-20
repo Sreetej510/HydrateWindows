@@ -20,7 +20,7 @@ namespace Hydrate.ViewModels
         {
             Quantity = editItem.QuantityDrank;
             EditItem = editItem;
-            Hour = (EditItem.DrankTime.Hour) % 12;
+            Hour = EditItem.DrankTime.Hour;
             Minutes = EditItem.DrankTime.Minute;
             DoneClicked = new RelayCommand(p => true, p => EventDoneClicked(window));
         }

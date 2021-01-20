@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Hydrate.Models
 {
-    internal class PopulateList : INotifyPropertyChanged
+    internal class ManipulateList : INotifyPropertyChanged
     {
         private ObservableCollection<DrinkingListItem> _drinkingList;
 
@@ -28,40 +30,39 @@ namespace Hydrate.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public PopulateList()
+        public ManipulateList()
         {
-            var drinkingList = new ObservableCollection<DrinkingListItem> { };
-            for (int i = 0; i < 3; i++)
-            {
-                drinkingList.Add(new DrinkingListItem { QuantityDrank = 100, DrankTime = new DateTime(2015, 12, 2) });
-                drinkingList.Add(new DrinkingListItem { QuantityDrank = 250, DrankTime = DateTime.Now });
-                drinkingList.Add(new DrinkingListItem { QuantityDrank = 150, DrankTime = new DateTime(2015, 12, 2) });
-            }
+            DrinkingList = new ObservableCollection<DrinkingListItem> { };
+            var dbSync = new DatabaseSync();
+            Task.Run(() => dbSync.Refresh()).Wait();
 
-            DrinkingList = new ObservableCollection<DrinkingListItem>(drinkingList.OrderByDescending(x => x.DrankTime));
+            foreach (var item in dbSync.SyncList)
+            {
+                DrinkingList.Add(new DrinkingListItem()
+                {
+                    Id = item.Id,
+                    QuantityDrank = int.Parse(item.DrankQuantity),
+                    DrankTime = DateTime.ParseExact(item.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture)
+                });
+            }
         }
 
         public void AddItem()
         {
-            var tempList = new List<DrinkingListItem>(DrinkingList);
+            var timeNow = DateTime.Now;
+            new DatabaseSync().Upload(timeNow, 100);
 
-            tempList.Add(new DrinkingListItem() { QuantityDrank = 100, DrankTime = DateTime.Now.AddHours(2) });
+            var tempList = new List<DrinkingListItem>(DrinkingList);
+            tempList.Add(new DrinkingListItem() { QuantityDrank = 100, DrankTime = timeNow, Id = timeNow.ToString("HHmmssff") });
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
 
         public void DeleteItem(DrinkingListItem deleteItem)
         {
-            var tempList = new List<DrinkingListItem>(DrinkingList);
+            new DatabaseSync().Delete(deleteItem.Id);
 
+            var tempList = new List<DrinkingListItem>(DrinkingList);
             tempList.Remove(deleteItem);
-            DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
-        }
-
-        public void EditItem(DrinkingListItem editItem)
-        {
-            var tempList = new List<DrinkingListItem>(DrinkingList);
-
-            tempList.Add(new DrinkingListItem() { QuantityDrank = 10000, DrankTime = DateTime.Now.AddHours(2) });
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
     }

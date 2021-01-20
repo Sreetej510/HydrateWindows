@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows.Media;
 
 namespace Hydrate.Models
 {
     public class DrinkingListItem : INotifyPropertyChanged
     {
+        public string Id { get; set; }
         private DateTime _drankTime;
 
         public DateTime DrankTime
@@ -61,6 +60,7 @@ namespace Hydrate.Models
             }
 
             DrankTime = new DateTime(year, month, day, hour, minutes, 0);
+            new DatabaseSync().Edit(DrankTime, QuantityDrank, Id);
         }
     }
 }

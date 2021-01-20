@@ -1,39 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Configurations>Debug;Release;Test</Configurations>
-    <Platforms>AnyCPU;x64</Platforms>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<Configurations>Debug;Release;Test</Configurations>
+		<Platforms>AnyCPU;x64</Platforms>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutputPath>C:\Users\sreet\Desktop\</OutputPath>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<OutputPath>C:\Users\sreet\Desktop\</OutputPath>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\Icons\close_black.png" />
-    <None Remove="Resources\Icons\edit_black.png" />
-    <None Remove="Resources\Icons\menu_white.png" />
-    <None Remove="Resources\Icons\minimize_black.png" />
-    <None Remove="Resources\Icons\more_vert_black.png" />
-    <None Remove="Resources\Icons\remove_black.png" />
-    <None Remove="Resources\Icons\settings_black.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Resources\Icons\close_black.png" />
+		<None Remove="Resources\Icons\edit_black.png" />
+		<None Remove="Resources\Icons\menu_white.png" />
+		<None Remove="Resources\Icons\minimize_black.png" />
+		<None Remove="Resources\Icons\more_vert_black.png" />
+		<None Remove="Resources\Icons\remove_black.png" />
+		<None Remove="Resources\Icons\settings_black.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Resources\Icons\edit_black.png" />
-    <Resource Include="Resources\Icons\remove_black.png" />
-    <Resource Include="Resources\Icons\settings_black.png" />
-    <Resource Include="Resources\Icons\close_black.png" />
-    <Resource Include="Resources\Icons\menu_white.png" />
-    <Resource Include="Resources\Icons\minimize_black.png" />
-    <Resource Include="Resources\Icons\more_vert_black.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Resources\Icons\edit_black.png" />
+		<Resource Include="Resources\Icons\remove_black.png" />
+		<Resource Include="Resources\Icons\settings_black.png" />
+		<Resource Include="Resources\Icons\close_black.png" />
+		<Resource Include="Resources\Icons\menu_white.png" />
+		<Resource Include="Resources\Icons\minimize_black.png" />
+		<Resource Include="Resources\Icons\more_vert_black.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Unnoficial.Microsoft.Expression.Drawing" Version="1.0.0" />
-  </ItemGroup>
-
+	<ItemGroup>
+		<PackageReference Include="FirebaseDatabase.net" Version="4.0.5" />
+		<PackageReference Include="Unnoficial.Microsoft.Expression.Drawing" Version="1.0.0" />
+	</ItemGroup>
 </Project>

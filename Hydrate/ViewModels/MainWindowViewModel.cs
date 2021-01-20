@@ -2,6 +2,7 @@
 using Hydrate.Services;
 using Hydrate.Views.Main;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -10,9 +11,9 @@ namespace Hydrate.ViewModels
 {
     internal class MainWindowViewModel : INotifyPropertyChanged
     {
-        private PopulateList _populateList;
+        private ManipulateList _populateList;
 
-        public PopulateList PopulateList
+        public ManipulateList PopulateList
         {
             get { return _populateList; }
             set
@@ -79,10 +80,16 @@ namespace Hydrate.ViewModels
         public MainWindowViewModel()
         {
             Goal = 3.65;
-            PopulateList = new PopulateList();
+            PopulateList = new ManipulateList();
             AddItem = new RelayCommand(p => true, p => EventAddItem());
-            DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             EditItem = new RelayCommand(p => true, p => EditItemModal());
+            DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
+            UpdateTotalDrank();
+        }
+
+        public void EventAddItem()
+        {
+            PopulateList.AddItem();
             UpdateTotalDrank();
         }
 
@@ -96,12 +103,6 @@ namespace Hydrate.ViewModels
         public void EventDeleteItem()
         {
             PopulateList.DeleteItem(SelectedItem);
-            UpdateTotalDrank();
-        }
-
-        public void EventAddItem()
-        {
-            PopulateList.AddItem();
             UpdateTotalDrank();
         }
 
