@@ -1,7 +1,5 @@
 ﻿using Hydrate.Models;
 using Hydrate.Services;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 
@@ -16,18 +14,19 @@ namespace Hydrate.ViewModels
 
         public ICommand DoneClicked { get; }
 
-        public EditWindowViewModel(DrinkingListItem editItem, Window window)
+        public EditWindowViewModel(DrinkingListItem editItem, Window window, ManipulateList List)
         {
             Quantity = editItem.QuantityDrank;
             EditItem = editItem;
             Hour = EditItem.DrankTime.Hour;
             Minutes = EditItem.DrankTime.Minute;
-            DoneClicked = new RelayCommand(p => true, p => EventDoneClicked(window));
+            DoneClicked = new RelayCommand(p => true, p => EventDoneClicked(window, List));
         }
 
-        private void EventDoneClicked(Window window)
+        private void EventDoneClicked(Window window, ManipulateList List)
         {
             EditItem.EditInfo(Quantity, Hour, Minutes);
+            List.EditItem();
             window.Close();
         }
     }

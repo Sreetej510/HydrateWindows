@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Hydrate.Models
 {
-    internal class ManipulateList : INotifyPropertyChanged
+    public class ManipulateList : INotifyPropertyChanged
     {
         private ObservableCollection<DrinkingListItem> _drinkingList;
 
@@ -63,6 +63,12 @@ namespace Hydrate.Models
 
             var tempList = new List<DrinkingListItem>(DrinkingList);
             tempList.Remove(deleteItem);
+            DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+        }
+
+        public void EditItem()
+        {
+            var tempList = new List<DrinkingListItem>(DrinkingList);
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
     }

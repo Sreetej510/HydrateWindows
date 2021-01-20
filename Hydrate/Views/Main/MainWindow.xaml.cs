@@ -1,10 +1,5 @@
 ﻿using Hydrate.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Hydrate.Views.Main

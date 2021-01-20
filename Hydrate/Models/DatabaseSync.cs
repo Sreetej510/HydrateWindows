@@ -1,12 +1,8 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Hydrate.Models
@@ -28,13 +24,14 @@ namespace Hydrate.Models
         {
             var Today = DateTime.Now.ToString("dd-MM-yyyy");
 
-            SyncList = new ObservableCollection<DatabaseItem>((await FirebaseClient.Child(Today)
+            var tempList = (await FirebaseClient.Child(Today)
                 .OnceAsync<DatabaseItem>()).Select(item => new DatabaseItem()
                 {
                     Id = item.Object.Id,
                     DrankTime = Today + " " + item.Object.DrankTime,
                     DrankQuantity = item.Object.DrankQuantity
-                }));
+                });
+            SyncList = new ObservableCollection<DatabaseItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
 
         public async void Upload(DateTime dateTime, int drankQuantity)
