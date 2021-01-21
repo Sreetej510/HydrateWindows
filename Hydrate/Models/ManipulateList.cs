@@ -49,7 +49,6 @@ namespace Hydrate.Models
         public void AddItem(object param)
         {
             var timeNow = DateTime.Now;
-            new DatabaseSync().Upload(timeNow, 100, false);
 
             var value = param.ToString();
             bool eaten;
@@ -64,6 +63,8 @@ namespace Hydrate.Models
                 eaten = false;
                 quantityDrank = int.Parse(value);
             }
+
+            new DatabaseSync().Upload(timeNow, quantityDrank, eaten);
 
             var tempList = new List<DrinkingListItem>(DrinkingList)
             {
