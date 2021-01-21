@@ -16,7 +16,7 @@ namespace Hydrate.Models
         public double TimeRemainig { get; set; }
         public double NextDrink { get; private set; }
 
-        private readonly DateTime SleepTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 22.00.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
+        private readonly DateTime SleepTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 23.59.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
         private DispatcherTimer Timer;
         private DispatcherTimer TimerForCheck;
 
@@ -115,7 +115,15 @@ namespace Hydrate.Models
         {
             Timer.Stop();
             var window = new Notification((int)NextDrink);
-            window.Show();
+            try
+            {
+                window.Show();
+                window.Activate();
+            }
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         private void Recheck(double time)

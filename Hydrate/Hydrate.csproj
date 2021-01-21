@@ -31,6 +31,7 @@
 		<None Remove="Resources\QuantityIcons\250ml.png" />
 		<None Remove="Resources\QuantityIcons\below_150ml.png" />
 		<None Remove="Resources\QuantityIcons\food.png" />
+		<None Remove="Resources\Sounds\LlamaBell.wav" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -63,6 +64,9 @@
 		</Content>
 		<Content Include="Resources\Icons\close_black.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\Sounds\LlamaBell.wav">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
