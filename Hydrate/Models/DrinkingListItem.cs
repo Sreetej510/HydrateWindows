@@ -1,52 +1,83 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace Hydrate.Models
 {
-    public class DrinkingListItem : INotifyPropertyChanged
+    public class DrinkingListItem
     {
         public string Id { get; set; }
-        private DateTime _drankTime;
+        public bool Eaten { get; set; }
+        public string QuantityVisibility { get; set; }
+        public string FoodVisibility { get; set; }
+        public DateTime DrankTime { get; set; }
+        private readonly static string[] ImgSourceArray = new string[] { "below_150ml.png", "150ml.png", "200ml.png", "250ml.png", "food.png" };
 
-        public DateTime DrankTime
+        public string ImageSource { get; set; }
+        public int QuantityDrank { get; set; }
+
+        public DrinkingListItem(bool eaten, int quantityDrank)
         {
-            get { return _drankTime; }
-            set
+            QuantityDrank = quantityDrank;
+            Eaten = eaten;
+            if (Eaten)
             {
-                _drankTime = value;
-                OnPropertyChanged();
+                QuantityVisibility = "Hidden";
+                FoodVisibility = "Visible";
+            }
+            else
+            {
+                QuantityVisibility = "Visible";
+                FoodVisibility = "Hidden";
+            }
+            SetImage();
+        }
+
+        public void SetImage()
+        {
+            ImageSource = "/Resources/QuantityIcons/";
+            if (Eaten)
+            {
+                ImageSource += ImgSourceArray[4];
+            }
+            else
+            {
+                if (QuantityDrank >= 250)
+                {
+                    ImageSource += ImgSourceArray[3];
+                }
+                else if (QuantityDrank >= 200 && QuantityDrank < 250)
+                {
+                    ImageSource += ImgSourceArray[2];
+                }
+                else if (QuantityDrank >= 150 && QuantityDrank < 200)
+                {
+                    ImageSource += ImgSourceArray[1];
+                }
+                else if (QuantityDrank < 150)
+                {
+                    ImageSource += ImgSourceArray[0];
+                }
             }
         }
 
-        public ImageSource ImageSource { get; set; }
-        private int _quantityDrank;
-
-        public int QuantityDrank
+        public void EditInfo(int quantity, int hour, int minutes, bool eaten)
         {
-            get { return _quantityDrank; }
-            set
+            Eaten = eaten;
+            if (eaten)
             {
-                _quantityDrank = value;
-                OnPropertyChanged();
+                QuantityDrank = 0;
+                QuantityVisibility = "Hidden";
+                FoodVisibility = "Visible";
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public DrinkingListItem()
-        {
-        }
-
-        public void EditInfo(int quantity, int hour, int minutes)
-        {
-            QuantityDrank = quantity;
+            else
+            {
+                QuantityDrank = quantity;
+                QuantityVisibility = "Visible";
+                FoodVisibility = "Hidden";
+            }
             var day = DrankTime.Day;
             var month = DrankTime.Month;
             var year = DrankTime.Year;
@@ -60,7 +91,8 @@ namespace Hydrate.Models
             }
 
             DrankTime = new DateTime(year, month, day, hour, minutes, 0);
-            new DatabaseSync().Edit(DrankTime, QuantityDrank, Id);
+            new DatabaseSync().Edit(DrankTime, QuantityDrank, Id, Eaten);
+            SetImage();
         }
     }
 }

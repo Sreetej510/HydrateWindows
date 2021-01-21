@@ -1,6 +1,7 @@
 ﻿using Hydrate.Models;
 using Hydrate.Services;
 using Hydrate.Views.Main;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -79,7 +80,7 @@ namespace Hydrate.ViewModels
         {
             Goal = 4;
             PopulateList = new ManipulateList();
-            AddItem = new RelayCommand(p => true, p => EventAddItem());
+            AddItem = new RelayCommand(p => true, p => EventAddItem(p));
             EditItem = new RelayCommand(p => true, p => EditItemModal());
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             UpdateTotalDrank();
@@ -87,9 +88,9 @@ namespace Hydrate.ViewModels
             _ = new Schedule(Goal, TotalDrank, PopulateList);
         }
 
-        public void EventAddItem()
+        public void EventAddItem(object param)
         {
-            PopulateList.AddItem();
+            PopulateList.AddItem(param);
             UpdateTotalDrank();
         }
 

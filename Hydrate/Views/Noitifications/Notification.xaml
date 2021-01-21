@@ -16,5 +16,8 @@
     <Grid Background="DeepSkyBlue" MouseDown="Grid_MouseDown">
         <Label Content="{Binding NeedToDrink}" ContentStringFormat="{}Drink : {0} ml" FontSize="20" FontFamily="Comic Sans MS" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,40,0,0" />
         <Label Content="{Binding Time}" ContentStringFormat="{}hh:mm tt" FontSize="14" FontFamily="Comic Sans MS" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,100,20" />
+        <Button HorizontalAlignment="Right"  VerticalAlignment="Center" Height="45" Margin="0,0,15,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="Close_Click">
+            <Image Source="/Resources/Icons/close_black.png" />
+        </Button>
     </Grid>
 </Window>

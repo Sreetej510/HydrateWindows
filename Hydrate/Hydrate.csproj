@@ -4,11 +4,16 @@
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
 		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
 		<Configurations>Debug;Release;Test</Configurations>
 		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<OutputPath>C:\Users\sreet\Desktop\</OutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
 		<OutputPath>C:\Users\sreet\Desktop\</OutputPath>
 	</PropertyGroup>
 
@@ -20,16 +25,45 @@
 		<None Remove="Resources\Icons\more_vert_black.png" />
 		<None Remove="Resources\Icons\remove_black.png" />
 		<None Remove="Resources\Icons\settings_black.png" />
+		<None Remove="Resources\omegarts_white.ico" />
+		<None Remove="Resources\QuantityIcons\150ml.png" />
+		<None Remove="Resources\QuantityIcons\200ml.png" />
+		<None Remove="Resources\QuantityIcons\250ml.png" />
+		<None Remove="Resources\QuantityIcons\below_150ml.png" />
+		<None Remove="Resources\QuantityIcons\food.png" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Resource Include="Resources\Icons\edit_black.png" />
 		<Resource Include="Resources\Icons\remove_black.png" />
 		<Resource Include="Resources\Icons\settings_black.png" />
-		<Resource Include="Resources\Icons\close_black.png" />
 		<Resource Include="Resources\Icons\menu_white.png" />
 		<Resource Include="Resources\Icons\minimize_black.png" />
 		<Resource Include="Resources\Icons\more_vert_black.png" />
+		<Content Include="Resources\QuantityIcons\150ml.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\omegarts_white.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\QuantityIcons\150ml.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\QuantityIcons\200ml.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\QuantityIcons\250ml.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\QuantityIcons\below_150ml.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\QuantityIcons\food.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Resources\Icons\close_black.png">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>

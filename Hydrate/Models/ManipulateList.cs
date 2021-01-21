@@ -38,22 +38,37 @@ namespace Hydrate.Models
 
             foreach (var item in dbSync.SyncList)
             {
-                DrinkingList.Add(new DrinkingListItem()
+                DrinkingList.Add(new DrinkingListItem(item.EatenFood, int.Parse(item.DrankQuantity))
                 {
                     Id = item.Id,
-                    QuantityDrank = int.Parse(item.DrankQuantity),
-                    DrankTime = DateTime.ParseExact(item.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture)
+                    DrankTime = DateTime.ParseExact(item.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture),
                 });
             }
         }
 
-        public void AddItem()
+        public void AddItem(object param)
         {
             var timeNow = DateTime.Now;
-            new DatabaseSync().Upload(timeNow, 100);
+            new DatabaseSync().Upload(timeNow, 100, false);
 
-            var tempList = new List<DrinkingListItem>(DrinkingList);
-            tempList.Add(new DrinkingListItem() { QuantityDrank = 100, DrankTime = timeNow, Id = timeNow.ToString("HHmmssff") });
+            var value = param.ToString();
+            bool eaten;
+            int quantityDrank;
+            if (value == "food")
+            {
+                eaten = true;
+                quantityDrank = 0;
+            }
+            else
+            {
+                eaten = false;
+                quantityDrank = int.Parse(value);
+            }
+
+            var tempList = new List<DrinkingListItem>(DrinkingList)
+            {
+                new DrinkingListItem(eaten,quantityDrank) { DrankTime = timeNow, Id = timeNow.ToString("HHmmssff")}
+            };
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
 

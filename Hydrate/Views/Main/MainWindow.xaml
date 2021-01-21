@@ -16,7 +16,6 @@
         <Button Width="35" Height="35" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="2" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" Click="Close_Clicked">
             <Image Source="/Resources/Icons/close_black.png" />
         </Button>
-
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100,120,0,0">
             <ed:Arc StrokeThickness="50" StartAngle="-120" EndAngle="120" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="#FFBABEC0" Stretch="None" />
             <ed:Arc StrokeThickness="50" StartAngle="-120" EndAngle="{Binding EndAngle}" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="#FF01A5FA" Stretch="None">
@@ -28,12 +27,26 @@
             <Label Content="{Binding Goal}" ContentStringFormat="{}{0:F2} L" FontSize="30" FontFamily="Comic Sans MS" Margin="0,0,10,40" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
         </Grid>
 
-        <!--add Image to buttons here-->
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Width="400" Margin="100,500,0,0">
-            <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" />
-            <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" />
-            <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" />
-            <Button Content="100 ml" FontSize="20" Width="90" Height="90" Margin="5,0" />
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Height="90" HorizontalAlignment="Left" Width="400" Margin="100,500,0,0">
+            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="250">
+                <Image Source="/Resources/QuantityIcons/250ml.png" />
+            </Button>
+            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="200">
+                <Image Source="/Resources/QuantityIcons/200ml.png" />
+            </Button>
+            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="150">
+                <Image Source="/Resources/QuantityIcons/150ml.png" />
+            </Button>
+            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="food">
+                <Image Source="/Resources/QuantityIcons/Food.png" />
+            </Button>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Width="400" Margin="100,590,0,0"  Height="30">
+            <Label Content="250 ml" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
+            <Label Content="200 ml" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
+            <Label Content="150 ml" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
+            <Label Content="Food" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
         </StackPanel>
 
         <ListView ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding PopulateList.DrinkingList}" HorizontalAlignment="Right" Background="AliceBlue" Width="500" Margin="0,50,20,20" AlternationCount="2" SelectedItem="{Binding SelectedItem}">
@@ -83,8 +96,9 @@
                         <Image Grid.Column="0" Source="{Binding ImageSource}" />
 
                         <Grid Grid.Column="1">
-                            <Label Content="{Binding QuantityDrank}" FontSize="25" VerticalAlignment="Center" ContentStringFormat="{}{0} ml" />
-                            <Label Content="{Binding DrankTime}" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0,0,20,10" ContentStringFormat="{}{0:hh\:mm tt}" />
+                            <Label Content="{Binding QuantityDrank}" FontFamily="Comic Sans MS" FontSize="25" VerticalAlignment="Center" ContentStringFormat="{}{0} ml" Visibility="{Binding QuantityVisibility}" />
+                            <Label Content="Had Food" FontSize="25" FontFamily="Comic Sans MS" VerticalAlignment="Center"  Visibility="{Binding FoodVisibility}" />
+                            <Label Content="{Binding DrankTime}" FontFamily="Comic Sans MS" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0,0,20,10" ContentStringFormat="{}{0:hh\:mm tt}" />
                         </Grid>
                     </Grid>
                 </DataTemplate>

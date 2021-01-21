@@ -11,6 +11,7 @@ namespace Hydrate.ViewModels
         public int Quantity { get; set; }
         public int Hour { get; set; }
         public int Minutes { get; set; }
+        public bool HasEaten { get; set; }
 
         public ICommand DoneClicked { get; }
 
@@ -21,11 +22,12 @@ namespace Hydrate.ViewModels
             Hour = EditItem.DrankTime.Hour;
             Minutes = EditItem.DrankTime.Minute;
             DoneClicked = new RelayCommand(p => true, p => EventDoneClicked(window, List));
+            HasEaten = EditItem.Eaten;
         }
 
         private void EventDoneClicked(Window window, ManipulateList List)
         {
-            EditItem.EditInfo(Quantity, Hour, Minutes);
+            EditItem.EditInfo(Quantity, Hour, Minutes, HasEaten);
             List.EditItem();
             window.Close();
         }

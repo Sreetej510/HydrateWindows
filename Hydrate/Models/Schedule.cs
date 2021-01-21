@@ -7,18 +7,18 @@ namespace Hydrate.Models
 {
     internal class Schedule
     {
-        private int Goal;
+        private readonly int Goal;
 
         public int NeedToDrink { get; }
         public ManipulateList ManipulateList { get; }
         public double RemainingTime { get; }
         public DrinkingListItem LatestItem { get; }
-        public double Timer { get; set; }
+        public double TimeRemainig { get; set; }
         public double NextDrink { get; private set; }
 
-        private DateTime SleepTime;
-        private DispatcherTimer timer;
-        private DispatcherTimer timerCheck;
+        private readonly DateTime SleepTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 22.00.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
+        private DispatcherTimer Timer;
+        private DispatcherTimer TimerForCheck;
 
         public Schedule(double goal, int currentDrink, ManipulateList manipulateList)
         {
@@ -37,11 +37,10 @@ namespace Hydrate.Models
             }
             else
             {
-                var tempTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 00.00.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
-                LatestItem = new DrinkingListItem() { DrankTime = tempTime, QuantityDrank = 250 };
+                var tempTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 06.00.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
+                LatestItem = new DrinkingListItem(false, 250) { DrankTime = tempTime };
             }
 
-            SleepTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 23.59.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
             RemainingTime = (SleepTime - DateTime.Now).TotalMinutes;
 
             TimerSet();
@@ -52,6 +51,7 @@ namespace Hydrate.Models
             var nextDrink_min = NeedToDrink / RemainingTime;
             var lastDrankQuantity = LatestItem.QuantityDrank;
             var lastDrankTime = LatestItem.DrankTime;
+            var hasEaten = LatestItem.Eaten;
             double timeInterval;
             if (nextDrink_min > 0)
             {
@@ -77,46 +77,61 @@ namespace Hydrate.Models
             {
                 NextDrink = 300;
             }
+            else if (NextDrink < 150)
+            {
+                NextDrink = 150;
+            }
 
             var timeGap = DateTime.Now - lastDrankTime;
-            Timer = timeInterval - timeGap.TotalMinutes;
-            if (Timer < 0)
+            TimeRemainig = timeInterval - timeGap.TotalMinutes;
+            if (hasEaten)
+            {
+                TimeRemainig = 45;
+            }
+
+            if (TimeRemainig < 0)
             {
                 Notify(0);
             }
             else
             {
-                Notify(Timer);
+                Notify(TimeRemainig);
             }
         }
 
         private void Notify(double time)
         {
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMinutes(time);
-            timer.Tick += new EventHandler(timer_Elapsed);
-            timer.Start();
-            Recheck(time + 30);
+            Timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMinutes(time)
+            };
+
+            Timer.Tick += new EventHandler(Timer_Elapsed);
+            Timer.Start();
+            Recheck(time + 15);
         }
 
-        private void timer_Elapsed(object sender, EventArgs e)
+        private void Timer_Elapsed(object sender, EventArgs e)
         {
-            timer.Stop();
+            Timer.Stop();
             var window = new Notification((int)NextDrink);
             window.Show();
         }
 
         private void Recheck(double time)
         {
-            timerCheck = new DispatcherTimer();
-            timerCheck.Interval = TimeSpan.FromMinutes(time);
-            timerCheck.Tick += new EventHandler(timerCheck_Elapsed);
-            timerCheck.Start();
+            TimerForCheck = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMinutes(time)
+            };
+
+            TimerForCheck.Tick += new EventHandler(TimerCheck_Elapsed);
+            TimerForCheck.Start();
         }
 
-        private void timerCheck_Elapsed(object sender, EventArgs e)
+        private void TimerCheck_Elapsed(object sender, EventArgs e)
         {
-            timerCheck.Stop();
+            TimerForCheck.Stop();
             var totalDrank = 0;
             foreach (var item in ManipulateList.DrinkingList)
             {

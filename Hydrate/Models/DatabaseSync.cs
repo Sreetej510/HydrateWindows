@@ -29,12 +29,13 @@ namespace Hydrate.Models
                 {
                     Id = item.Object.Id,
                     DrankTime = Today + " " + item.Object.DrankTime,
-                    DrankQuantity = item.Object.DrankQuantity
+                    DrankQuantity = item.Object.DrankQuantity,
+                    EatenFood = item.Object.EatenFood
                 });
             SyncList = new ObservableCollection<DatabaseItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
 
-        public async void Upload(DateTime dateTime, int drankQuantity)
+        public async void Upload(DateTime dateTime, int drankQuantity, bool eatenFood)
         {
             await FirebaseClient.Child(DateTime.Now.ToString("dd-MM-yyyy")).Child(dateTime.ToString("HHmmssff"))
                  .PutAsync(new DatabaseItem()
@@ -42,10 +43,11 @@ namespace Hydrate.Models
                      Id = dateTime.ToString("HHmmssff"),
                      DrankQuantity = drankQuantity.ToString(),
                      DrankTime = dateTime.ToString("HH.mm.ss"),
+                     EatenFood = eatenFood
                  });
         }
 
-        public async void Edit(DateTime dateTime, int drankQuantity, string id)
+        public async void Edit(DateTime dateTime, int drankQuantity, string id, bool eaten)
         {
             await FirebaseClient.Child(DateTime.Now.ToString("dd-MM-yyyy")).Child(id)
                 .PutAsync(new DatabaseItem()
@@ -53,6 +55,7 @@ namespace Hydrate.Models
                     Id = id,
                     DrankQuantity = drankQuantity.ToString(),
                     DrankTime = dateTime.ToString("HH.mm.ss"),
+                    EatenFood = eaten
                 });
         }
 
