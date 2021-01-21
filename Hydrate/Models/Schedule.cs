@@ -83,11 +83,11 @@ namespace Hydrate.Models
             }
 
             var timeGap = DateTime.Now - lastDrankTime;
-            TimeRemainig = timeInterval - timeGap.TotalMinutes;
             if (hasEaten)
             {
-                TimeRemainig = 45;
+                timeInterval = 60;
             }
+            TimeRemainig = timeInterval - timeGap.TotalMinutes;
 
             if (TimeRemainig < 0)
             {
