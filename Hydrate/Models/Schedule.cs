@@ -32,11 +32,14 @@ namespace Hydrate.Models
 
         public void Test()
         {
+            ManipulateList.ListRefresh();
+
             var totalDrank = 0;
             foreach (var item in ManipulateList.DrinkingList)
             {
                 totalDrank += item.QuantityDrank;
             }
+
             NeedToDrink = Goal - totalDrank;
 
             if (NeedToDrink <= 0)
@@ -75,6 +78,7 @@ namespace Hydrate.Models
             var lastDrankTime = LatestItem.DrankTime;
             var hasEaten = LatestItem.Eaten;
             double timeInterval;
+
             if (nextDrink_min > 0)
             {
                 if (lastDrankQuantity >= 250)
@@ -94,7 +98,9 @@ namespace Hydrate.Models
             {
                 return;
             }
+
             NextDrink = nextDrink_min * timeInterval;
+
             if (NextDrink > 300)
             {
                 NextDrink = 300;
@@ -109,22 +115,17 @@ namespace Hydrate.Models
             {
                 timeInterval = 60;
             }
+
             TimeRemaining = timeInterval - timeGap.TotalMinutes;
-
-            if (TimeRemaining < 0)
-            {
-                TimeRemaining = 0;
-            }
-
             Recheck(TimeRemaining);
         }
 
         private void Recheck(double time)
         {
-            if (time == 0)
+            if (time < 0)
             {
                 Notify();
-                time += 15;
+                time = 15;
             }
 
             TimerForCheck.Interval = TimeSpan.FromMinutes(time);
@@ -146,7 +147,6 @@ namespace Hydrate.Models
             try
             {
                 window.Show();
-                window.Activate();
             }
             catch (Exception)
             {

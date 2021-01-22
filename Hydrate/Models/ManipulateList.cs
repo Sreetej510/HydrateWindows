@@ -33,17 +33,26 @@ namespace Hydrate.Models
         public ManipulateList()
         {
             DrinkingList = new ObservableCollection<DrinkingListItem> { };
+            ListRefresh();
+        }
+
+        public void ListRefresh()
+        {
             var dbSync = new DatabaseSync();
             Task.Run(() => dbSync.Refresh()).Wait();
 
+            var tempList = new List<DrinkingListItem> { };
+
             foreach (var item in dbSync.SyncList)
             {
-                DrinkingList.Add(new DrinkingListItem(item.EatenFood, int.Parse(item.DrankQuantity))
+                tempList.Add(new DrinkingListItem(item.EatenFood, int.Parse(item.DrankQuantity))
                 {
                     Id = item.Id,
                     DrankTime = DateTime.ParseExact(item.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture),
                 });
             }
+
+            DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
 
         public void AddItem(object param)
