@@ -37,8 +37,17 @@ namespace Hydrate.Models
             }
             else
             {
-                var tempTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 06.00.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
-                LatestItem = new DrinkingListItem(false, 250) { DrankTime = tempTime };
+                DateTime tempTime;
+                if (DateTime.Now.Hour >= 6)
+                {
+                    tempTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 06.00.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    tempTime = DateTime.Now;
+                }
+
+                LatestItem = new DrinkingListItem(true, 250) { DrankTime = tempTime };
             }
 
             RemainingTime = (SleepTime - DateTime.Now).TotalMinutes;

@@ -12,6 +12,7 @@ namespace Hydrate.ViewModels
         public double left1 { get; set; }
         public double left2 { get; set; }
         public double Top { get; set; }
+        public SoundPlayer Player { get; }
 
         public NotificationViewModel(int needToDrink)
         {
@@ -29,8 +30,8 @@ namespace Hydrate.ViewModels
 
             Top = (count - 2) * 120 + count * 10;
 
-            SoundPlayer player = new SoundPlayer(@"Resources/Sounds/LlamaBell.wav");
-            player.Play();
+            Player = new SoundPlayer(@"Resources/Sounds/LlamaBell.wav");
+            Player.Play();
         }
     }
 }

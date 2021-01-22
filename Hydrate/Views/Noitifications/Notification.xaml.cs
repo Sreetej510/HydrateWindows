@@ -8,21 +8,26 @@ namespace Hydrate.Views.Noitifications
     /// </summary>
     public partial class Notification : Window
     {
+        private NotificationViewModel _binding;
+
         public Notification(int needToDrink)
         {
             InitializeComponent();
-            DataContext = new NotificationViewModel(needToDrink);
+            _binding = new NotificationViewModel(needToDrink);
+            DataContext = _binding;
         }
 
         private void Grid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             Application.Current.MainWindow.Show();
             Application.Current.MainWindow.Activate();
+            _binding.Player.Stop();
             Close();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
+            _binding.Player.Stop();
             Close();
         }
     }

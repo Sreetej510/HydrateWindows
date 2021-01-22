@@ -2,6 +2,8 @@
 using System;
 using System.Drawing;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 using Forms = System.Windows.Forms;
 
 namespace Hydrate
@@ -16,6 +18,7 @@ namespace Hydrate
         public App()
         {
             NotifyIcon = new Forms.NotifyIcon();
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
         }
 
         protected override void OnStartup(StartupEventArgs e)
