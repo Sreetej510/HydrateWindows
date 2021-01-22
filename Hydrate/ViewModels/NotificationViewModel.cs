@@ -9,8 +9,8 @@ namespace Hydrate.ViewModels
         public int NeedToDrink { get; }
         public DateTime Time { get; }
 
-        public double left1 { get; set; }
-        public double left2 { get; set; }
+        public double Left1 { get; set; }
+        public double Left2 { get; set; }
         public double Top { get; set; }
         public SoundPlayer Player { get; }
 
@@ -19,8 +19,8 @@ namespace Hydrate.ViewModels
             NeedToDrink = needToDrink;
             Time = DateTime.Now;
 
-            left1 = SystemParameters.PrimaryScreenWidth - 200;
-            left2 = SystemParameters.PrimaryScreenWidth - 520;
+            Left1 = SystemParameters.PrimaryScreenWidth - 200;
+            Left2 = SystemParameters.PrimaryScreenWidth - 520;
 
             var count = Application.Current.Windows.Count;
             if (count > 5)

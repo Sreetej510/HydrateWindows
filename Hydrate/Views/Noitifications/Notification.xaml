@@ -6,7 +6,7 @@
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard>
                 <Storyboard Duration="00:00:1">
-                    <DoubleAnimation Storyboard.TargetProperty="(Window.Left)" From="{Binding left1}" To="{Binding left2}" />
+                    <DoubleAnimation Storyboard.TargetProperty="(Window.Left)" From="{Binding Left1}" To="{Binding Left2}" />
                     <DoubleAnimation Storyboard.TargetProperty="(Opacity)" From="0" To="1" />
                 </Storyboard>
             </BeginStoryboard>

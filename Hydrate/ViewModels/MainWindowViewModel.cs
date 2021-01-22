@@ -1,7 +1,6 @@
 ﻿using Hydrate.Models;
 using Hydrate.Services;
 using Hydrate.Views.Main;
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -85,7 +84,7 @@ namespace Hydrate.ViewModels
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             UpdateTotalDrank();
 
-            _ = new Schedule(Goal, TotalDrank, PopulateList);
+            _ = new Schedule(Goal, PopulateList);
         }
 
         public void EventAddItem(object param)

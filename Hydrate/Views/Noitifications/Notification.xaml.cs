@@ -8,7 +8,7 @@ namespace Hydrate.Views.Noitifications
     /// </summary>
     public partial class Notification : Window
     {
-        private NotificationViewModel _binding;
+        private readonly NotificationViewModel _binding;
 
         public Notification(int needToDrink)
         {
