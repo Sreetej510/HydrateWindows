@@ -49,6 +49,11 @@
             <Label Content="Food" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
         </StackPanel>
 
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Width="400" Margin="100,650,0,0"  Height="30">
+            <Label Content="Next Notification at:" FontFamily="Comic Sans MS" FontSize="18" />
+            <Label Content="{Binding PopulateList.NextDrinkTime}" ContentStringFormat="{}{0:hh:mm tt}" FontFamily="Comic Sans MS" FontSize="18" />
+        </StackPanel>
+
         <ListView ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding PopulateList.DrinkingList}" HorizontalAlignment="Right" Background="AliceBlue" Width="500" Margin="0,50,20,20" AlternationCount="2" SelectedItem="{Binding SelectedItem}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -98,7 +103,7 @@
                         <Grid Grid.Column="1">
                             <Label Content="{Binding QuantityDrank}" FontFamily="Comic Sans MS" FontSize="25" VerticalAlignment="Center" ContentStringFormat="{}{0} ml" Visibility="{Binding QuantityVisibility}" />
                             <Label Content="Had Food" FontSize="25" FontFamily="Comic Sans MS" VerticalAlignment="Center"  Visibility="{Binding FoodVisibility}" />
-                            <Label Content="{Binding DrankTime}" FontFamily="Comic Sans MS" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0,0,20,10" ContentStringFormat="{}{0:hh\:mm tt}" />
+                            <Label Content="{Binding DrankTime}" FontFamily="Comic Sans MS" FontSize="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Padding="0,0,20,10" ContentStringFormat="{}{0:hh:mm tt}" />
                         </Grid>
                     </Grid>
                 </DataTemplate>

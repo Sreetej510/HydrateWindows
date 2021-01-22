@@ -37,10 +37,10 @@ namespace Hydrate.Models
 
         public async void Upload(DateTime dateTime, int drankQuantity, bool eatenFood)
         {
-            await FirebaseClient.Child(DateTime.Now.ToString("dd-MM-yyyy")).Child(dateTime.ToString("HHmmssff"))
+            await FirebaseClient.Child(DateTime.Now.ToString("dd-MM-yyyy")).Child(dateTime.ToString("HHmmssfff"))
                  .PutAsync(new DatabaseItem()
                  {
-                     Id = dateTime.ToString("HHmmssff"),
+                     Id = dateTime.ToString("HHmmssfff"),
                      DrankQuantity = drankQuantity.ToString(),
                      DrankTime = dateTime.ToString("HH.mm.ss"),
                      EatenFood = eatenFood

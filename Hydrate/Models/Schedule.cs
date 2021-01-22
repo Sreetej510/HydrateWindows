@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace Hydrate.Models
@@ -27,12 +28,17 @@ namespace Hydrate.Models
             Goal = (int)(goal * 1000);
             ManipulateList = manipulateList;
             TimerForCheck = new DispatcherTimer();
-            Test();
+            TimerForCheck.Tick += new EventHandler(OnTick);
+
+            StartSchedule(true); ;
         }
 
-        public void Test()
+        public void StartSchedule(bool refresh)
         {
-            ManipulateList.ListRefresh();
+            if (refresh)
+            {
+                ManipulateList.ListRefresh();
+            }
 
             var totalDrank = 0;
             foreach (var item in ManipulateList.DrinkingList)
@@ -127,31 +133,33 @@ namespace Hydrate.Models
                 Notify();
                 time = 15;
             }
+            ManipulateList.NextDrinkTime = DateTime.Now.AddMinutes(time);
 
             TimerForCheck.Interval = TimeSpan.FromMinutes(time);
-
-            TimerForCheck.Tick += new EventHandler(TimerCheck_Elapsed);
 
             TimerForCheck.Start();
         }
 
-        private void TimerCheck_Elapsed(object sender, EventArgs e)
+        private void OnTick(object sender, EventArgs e)
         {
             TimerForCheck.Stop();
-            Test();
+            StartSchedule(true);
         }
 
         private void Notify()
         {
-            var window = new Notification((int)NextDrink);
-            try
+            Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                window.Show();
-            }
-            catch (Exception)
-            {
-                return;
-            }
+                var window = new Notification((int)NextDrink);
+                try
+                {
+                    window.Show();
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }));
         }
     }
 }

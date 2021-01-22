@@ -3,6 +3,8 @@ using Hydrate.Services;
 using Hydrate.Views.Main;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Hydrate.ViewModels
@@ -65,6 +67,7 @@ namespace Hydrate.ViewModels
         public ICommand AddItem { get; }
         public ICommand EditItem { get; }
         public ICommand DeleteItem { get; }
+        public Schedule ScheduleClass { get; }
 
         // INotify
         public event PropertyChangedEventHandler PropertyChanged;
@@ -82,9 +85,8 @@ namespace Hydrate.ViewModels
             AddItem = new RelayCommand(p => true, p => EventAddItem(p));
             EditItem = new RelayCommand(p => true, p => EditItemModal());
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
+            ScheduleClass = new Schedule(Goal, PopulateList);
             UpdateTotalDrank();
-
-            _ = new Schedule(Goal, PopulateList);
         }
 
         public void EventAddItem(object param)
@@ -113,6 +115,8 @@ namespace Hydrate.ViewModels
             {
                 TotalDrank += item.QuantityDrank;
             }
+
+            Task.Run(() => ScheduleClass.StartSchedule(false));
         }
     }
 }

@@ -29,7 +29,6 @@ namespace Hydrate.ViewModels
             }
 
             Top = (count - 2) * 120 + count * 10;
-
             Player = new SoundPlayer(@"Resources/Sounds/LlamaBell.wav");
             Player.Play();
         }

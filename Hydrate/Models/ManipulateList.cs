@@ -23,6 +23,18 @@ namespace Hydrate.Models
             }
         }
 
+        private DateTime _nextDrinkTime;
+
+        public DateTime NextDrinkTime
+        {
+            get { return _nextDrinkTime; }
+            set
+            {
+                _nextDrinkTime = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -77,7 +89,7 @@ namespace Hydrate.Models
 
             var tempList = new List<DrinkingListItem>(DrinkingList)
             {
-                new DrinkingListItem(eaten,quantityDrank) { DrankTime = timeNow, Id = timeNow.ToString("HHmmssff")}
+                new DrinkingListItem(eaten,quantityDrank) { DrankTime = timeNow, Id = timeNow.ToString("HHmmssfff")}
             };
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
         }
