@@ -13,7 +13,7 @@ namespace Hydrate.Models
         public ManipulateList ManipulateList { get; }
         public double RemainingTime { get; }
         public DrinkingListItem LatestItem { get; }
-        public double TimeRemainig { get; set; }
+        public double TimeRemaining { get; set; }
         public double NextDrink { get; private set; }
 
         private readonly DateTime SleepTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 23.59.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
@@ -96,19 +96,19 @@ namespace Hydrate.Models
             {
                 timeInterval = 60;
             }
-            TimeRemainig = timeInterval - timeGap.TotalMinutes;
+            TimeRemaining = timeInterval - timeGap.TotalMinutes;
 
-            if (TimeRemainig < 0)
+            if (TimeRemaining < 0)
             {
-                Notify(0);
+                Notify(0, hasEaten);
             }
             else
             {
-                Notify(TimeRemainig);
+                Notify(TimeRemaining, hasEaten);
             }
         }
 
-        private void Notify(double time)
+        private void Notify(double time, bool hasEaten)
         {
             Timer = new DispatcherTimer
             {
@@ -117,6 +117,11 @@ namespace Hydrate.Models
 
             Timer.Tick += new EventHandler(Timer_Elapsed);
             Timer.Start();
+            if (hasEaten)
+            {
+                Recheck(time - 2);
+            }
+
             Recheck(time + 15);
         }
 
