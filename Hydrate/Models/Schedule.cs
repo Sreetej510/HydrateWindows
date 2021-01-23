@@ -29,11 +29,9 @@ namespace Hydrate.Models
             ManipulateList = manipulateList;
             TimerForCheck = new DispatcherTimer();
             TimerForCheck.Tick += new EventHandler(OnTick);
-
-            StartSchedule(true); ;
         }
 
-        public void StartSchedule(bool refresh)
+        public void StartSchedule(bool refresh = false)
         {
             if (refresh)
             {

@@ -89,7 +89,7 @@ namespace Hydrate.ViewModels
             EditItem = new RelayCommand(p => true, p => EditItemModal());
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             ScheduleClass = new Schedule(Goal, PopulateList);
-            UpdateTotalDrank();
+            UpdateTotalDrank(true);
             Task.Run(() => new DatabaseSync().deleteOldRecord());
         }
 
@@ -112,7 +112,7 @@ namespace Hydrate.ViewModels
             UpdateTotalDrank();
         }
 
-        private void UpdateTotalDrank()
+        private void UpdateTotalDrank(bool tempBool = false)
         {
             TotalDrank = 0;
             foreach (var item in PopulateList.DrinkingList)
@@ -120,7 +120,7 @@ namespace Hydrate.ViewModels
                 TotalDrank += item.QuantityDrank;
             }
             Task.Run(() => new DatabaseSync().UploadTotalDrank(TotalDrank));
-            Task.Run(() => ScheduleClass.StartSchedule(false));
+            Task.Run(() => ScheduleClass.StartSchedule(tempBool));
         }
     }
 }
