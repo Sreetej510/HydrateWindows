@@ -64,6 +64,8 @@ namespace Hydrate.ViewModels
             }
         }
 
+        public int YesterdayDrank { get; private set; }
+
         public ICommand AddItem { get; }
         public ICommand EditItem { get; }
         public ICommand DeleteItem { get; }
@@ -80,6 +82,7 @@ namespace Hydrate.ViewModels
         //ctor
         public MainWindowViewModel()
         {
+            Task.Run(() => { YesterdayDrank = new DatabaseSync().getOldRecord(); });
             Goal = 4;
             PopulateList = new ManipulateList();
             AddItem = new RelayCommand(p => true, p => EventAddItem(p));
@@ -87,6 +90,7 @@ namespace Hydrate.ViewModels
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             ScheduleClass = new Schedule(Goal, PopulateList);
             UpdateTotalDrank();
+            Task.Run(() => new DatabaseSync().deleteOldRecord());
         }
 
         public void EventAddItem(object param)
@@ -115,7 +119,7 @@ namespace Hydrate.ViewModels
             {
                 TotalDrank += item.QuantityDrank;
             }
-
+            Task.Run(() => new DatabaseSync().UploadTotalDrank(TotalDrank));
             Task.Run(() => ScheduleClass.StartSchedule(false));
         }
     }

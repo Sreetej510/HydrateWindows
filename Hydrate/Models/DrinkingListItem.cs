@@ -91,8 +91,8 @@ namespace Hydrate.Models
             }
 
             DrankTime = new DateTime(year, month, day, hour, minutes, 0);
+            Task.Run(() => SetImage());
             new DatabaseSync().Edit(DrankTime, QuantityDrank, Id, Eaten);
-            SetImage();
         }
     }
 }

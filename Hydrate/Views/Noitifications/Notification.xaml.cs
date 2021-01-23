@@ -19,6 +19,7 @@ namespace Hydrate.Views.Noitifications
 
         private void Grid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            Application.Current.MainWindow.WindowState = WindowState.Normal;
             Application.Current.MainWindow.Show();
             Application.Current.MainWindow.Activate();
             _binding.Player.Stop();
