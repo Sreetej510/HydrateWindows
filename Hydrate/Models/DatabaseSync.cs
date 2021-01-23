@@ -59,6 +59,22 @@ namespace Hydrate.Models
                 });
         }
 
+        public async void UploadTotalDrank(int totalDrank)
+        {
+            await FirebaseClient.Child("dailyProgress").Child(DateTime.Now.ToString("dd-MM-yyyy")).PutAsync(totalDrank);
+        }
+
+        public async void deleteOldRecord()
+        {
+            await FirebaseClient.Child(DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy")).DeleteAsync();
+        }
+
+        public int getOldRecord()
+        {
+            var res = FirebaseClient.Child("dailyProgress").Child(DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy")).OnceSingleAsync<int>();
+            return res.Result;
+        }
+
         public async void Delete(string id)
         {
             await FirebaseClient.Child(DateTime.Now.ToString("dd-MM-yyyy")).Child(id).DeleteAsync();

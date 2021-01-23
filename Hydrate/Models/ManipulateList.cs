@@ -85,22 +85,21 @@ namespace Hydrate.Models
                 quantityDrank = int.Parse(value);
             }
 
-            new DatabaseSync().Upload(timeNow, quantityDrank, eaten);
-
             var tempList = new List<DrinkingListItem>(DrinkingList)
             {
                 new DrinkingListItem(eaten,quantityDrank) { DrankTime = timeNow, Id = timeNow.ToString("HHmmssfff")}
             };
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+
+            new DatabaseSync().Upload(timeNow, quantityDrank, eaten);
         }
 
         public void DeleteItem(DrinkingListItem deleteItem)
         {
-            new DatabaseSync().Delete(deleteItem.Id);
-
             var tempList = new List<DrinkingListItem>(DrinkingList);
             tempList.Remove(deleteItem);
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+            new DatabaseSync().Delete(deleteItem.Id);
         }
 
         public void EditItem()
