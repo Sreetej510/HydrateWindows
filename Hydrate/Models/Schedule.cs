@@ -85,9 +85,9 @@ namespace Hydrate.Models
 
             if (nextDrink_min > 0)
             {
-                if (lastDrankQuantity >= 250)
+                if (lastDrankQuantity >= 300)
                 {
-                    timeInterval = 45;
+                    timeInterval = 50;
                 }
                 else if (lastDrankQuantity <= 200)
                 {
@@ -95,7 +95,7 @@ namespace Hydrate.Models
                 }
                 else
                 {
-                    timeInterval = (((NeedToDrink - 200) * 50) / 15) + 30;
+                    timeInterval = ((NeedToDrink - 200) * 5) + 30;
                 }
             }
             else
@@ -109,15 +109,15 @@ namespace Hydrate.Models
             {
                 NextDrink = 300;
             }
-            else if (NextDrink < 150)
+            else if (NextDrink < 100)
             {
-                NextDrink = 150;
+                NextDrink = 100;
             }
 
             var timeGap = DateTime.Now - lastDrankTime;
             if (hasEaten)
             {
-                timeInterval = 60;
+                timeInterval = 75;
             }
 
             TimeRemaining = timeInterval - timeGap.TotalMinutes;

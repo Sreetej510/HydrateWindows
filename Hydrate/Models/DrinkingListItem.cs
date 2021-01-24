@@ -44,19 +44,19 @@ namespace Hydrate.Models
             }
             else
             {
-                if (QuantityDrank >= 250)
+                if (QuantityDrank >= 300)
                 {
                     ImageSource += ImgSourceArray[3];
                 }
-                else if (QuantityDrank >= 200 && QuantityDrank < 250)
+                else if (QuantityDrank >= 200 && QuantityDrank < 300)
                 {
                     ImageSource += ImgSourceArray[2];
                 }
-                else if (QuantityDrank >= 150 && QuantityDrank < 200)
+                else if (QuantityDrank >= 100 && QuantityDrank < 200)
                 {
                     ImageSource += ImgSourceArray[1];
                 }
-                else if (QuantityDrank < 150)
+                else if (QuantityDrank < 100)
                 {
                     ImageSource += ImgSourceArray[0];
                 }

@@ -17,7 +17,6 @@
             <Image Source="/Resources/Icons/close_black.png" />
         </Button>
 
-
         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="100,90,0,0">
             <ed:Arc StrokeThickness="50" StartAngle="-120" EndAngle="120" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="#FFBABEC0" Stretch="None" />
             <ed:Arc StrokeThickness="50" StartAngle="-120" EndAngle="{Binding EndAngle}" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Width="400" Height="400" FlowDirection="LeftToRight" Stroke="#FF01A5FA" Stretch="None">
@@ -30,10 +29,10 @@
         </Grid>
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Height="90" HorizontalAlignment="Left" Width="400" Margin="100,470,0,0">
-            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="250">
+            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="330">
                 <Image Source="/Resources/QuantityIcons/250ml.png" />
             </Button>
-            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="200">
+            <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="250">
                 <Image Source="/Resources/QuantityIcons/200ml.png" />
             </Button>
             <Button Background="Transparent" FontSize="20" Width="90" Height="90" Margin="5,0" Command="{Binding AddItem}" CommandParameter="150">
@@ -45,16 +44,15 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Width="400" Margin="100,560,0,0"  Height="30">
+            <Label Content="330 ml" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
             <Label Content="250 ml" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
-            <Label Content="200 ml" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
             <Label Content="150 ml" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
             <Label Content="Food" FontFamily="Comic Sans MS" FontSize="18" Margin="5,0" Width="90" HorizontalContentAlignment="Center" />
         </StackPanel>
 
-        
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Width="400" Margin="100,630,0,0">
             <Label Content="{Binding PopulateList.NextDrinkTime}" ContentStringFormat="{} Next Notification at : {0:hh:mm tt}" FontFamily="Comic Sans MS" FontSize="15" />
-            <Label Content="{Binding YesterdayDrank}" ContentStringFormat="{} Drank Yesterday : {0} ml" FontFamily="Comic Sans MS" FontSize="15"/>
+            <Label Content="{Binding YesterdayDrank}" ContentStringFormat="{} Drank Yesterday : {0} ml" FontFamily="Comic Sans MS" FontSize="15" />
         </StackPanel>
 
         <ListView ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False" ItemsSource="{Binding PopulateList.DrinkingList}" HorizontalAlignment="Right" Background="AliceBlue" Width="500" Margin="0,50,20,20" AlternationCount="2" SelectedItem="{Binding SelectedItem}">
