@@ -1,8 +1,6 @@
 ﻿using Hydrate.Views.Noitifications;
 using System;
-using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -95,7 +93,7 @@ namespace Hydrate.Models
                 }
                 else
                 {
-                    timeInterval = ((NeedToDrink - 200) * 5) + 30;
+                    timeInterval = ((lastDrankQuantity - 200) / 5) + 30;
                 }
             }
             else

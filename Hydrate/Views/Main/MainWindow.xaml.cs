@@ -30,6 +30,7 @@ namespace Hydrate.Views.Main
 
         private void Close_Clicked(object sender, RoutedEventArgs e)
         {
+            WindowState = WindowState.Minimized;
             Hide();
         }
     }
