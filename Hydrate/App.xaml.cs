@@ -44,8 +44,8 @@ namespace Hydrate
 
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)
         {
-            MainWindow.WindowState = WindowState.Normal;
             MainWindow.Show();
+            MainWindow.WindowState = WindowState.Normal;
             MainWindow.Activate();
         }
     }
