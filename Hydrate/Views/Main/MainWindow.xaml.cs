@@ -1,4 +1,5 @@
 ﻿using Hydrate.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Input;
 
@@ -9,10 +10,12 @@ namespace Hydrate.Views.Main
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly MainWindowViewModel _bindingContext;
+
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainWindowViewModel();
+            DataContext = _bindingContext = new MainWindowViewModel();
         }
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
@@ -32,6 +35,12 @@ namespace Hydrate.Views.Main
         {
             WindowState = WindowState.Minimized;
             Hide();
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            _bindingContext.PopulateList.ListRefresh();
+            base.OnActivated(e);
         }
     }
 }

@@ -56,9 +56,6 @@
 		<Content Include="Resources\QuantityIcons\250ml.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Resources\QuantityIcons\below_150ml.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 		<Content Include="Resources\QuantityIcons\food.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
