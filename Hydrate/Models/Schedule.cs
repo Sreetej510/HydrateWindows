@@ -55,17 +55,19 @@ namespace Hydrate.Models
             }
             else
             {
+                bool tempEaten = true;
                 DateTime tempTime;
                 if (DateTime.Now.Hour >= 6)
                 {
                     tempTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 06.00.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
+                    tempEaten = false;
                 }
                 else
                 {
                     tempTime = DateTime.Now;
                 }
 
-                LatestItem = new DrinkingListItem(true, 250) { DrankTime = tempTime };
+                LatestItem = new DrinkingListItem(tempEaten, 250) { DrankTime = tempTime };
             }
 
             RemainingTime = (SleepTime - DateTime.Now).TotalMinutes;
