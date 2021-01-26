@@ -97,9 +97,9 @@ namespace Hydrate.Models
         public void DeleteItem(DrinkingListItem deleteItem)
         {
             var tempList = new List<DrinkingListItem>(DrinkingList);
+            new DatabaseSync().Delete(deleteItem.Id);
             tempList.Remove(deleteItem);
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
-            new DatabaseSync().Delete(deleteItem.Id);
         }
 
         public void EditItem()
