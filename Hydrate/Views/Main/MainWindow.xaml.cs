@@ -38,10 +38,15 @@ namespace Hydrate.Views.Main
             Hide();
         }
 
+        protected override void OnStateChanged(EventArgs e)
+        {
+            Task.Run(() => _bindingContext.PopulateList.ListRefresh());
+            base.OnStateChanged(e);
+        }
+
         protected override void OnActivated(EventArgs e)
         {
             _bindingContext.TotalDrank = _bindingContext.PopulateList.TotalDrank;
-            Task.Run(() => _bindingContext.PopulateList.ListRefresh());
             base.OnActivated(e);
         }
     }
