@@ -35,6 +35,8 @@ namespace Hydrate.Models
             }
         }
 
+        public int TotalDrank { get; private set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -55,6 +57,8 @@ namespace Hydrate.Models
 
             var tempList = new List<DrinkingListItem> { };
 
+            TotalDrank = 0;
+
             foreach (var item in dbSync.SyncList)
             {
                 tempList.Add(new DrinkingListItem(item.EatenFood, int.Parse(item.DrankQuantity))
@@ -62,6 +66,7 @@ namespace Hydrate.Models
                     Id = item.Id,
                     DrankTime = DateTime.ParseExact(item.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture),
                 });
+                TotalDrank += int.Parse(item.DrankQuantity);
             }
 
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
@@ -92,6 +97,7 @@ namespace Hydrate.Models
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
 
             new DatabaseSync().Upload(timeNow, quantityDrank, eaten);
+            UpdateTotalDrank();
         }
 
         public void DeleteItem(DrinkingListItem deleteItem)
@@ -100,12 +106,23 @@ namespace Hydrate.Models
             new DatabaseSync().Delete(deleteItem.Id);
             tempList.Remove(deleteItem);
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+            UpdateTotalDrank();
         }
 
         public void EditItem()
         {
             var tempList = new List<DrinkingListItem>(DrinkingList);
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+            UpdateTotalDrank();
+        }
+
+        private void UpdateTotalDrank()
+        {
+            TotalDrank = 0;
+            foreach (var item in DrinkingList)
+            {
+                TotalDrank += item.QuantityDrank;
+            }
         }
     }
 }

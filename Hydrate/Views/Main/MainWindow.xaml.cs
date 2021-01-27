@@ -40,7 +40,7 @@ namespace Hydrate.Views.Main
 
         protected override void OnActivated(EventArgs e)
         {
-            _bindingContext.UpdateTotalDrank();
+            _bindingContext.TotalDrank = _bindingContext.PopulateList.TotalDrank;
             Task.Run(() => _bindingContext.PopulateList.ListRefresh());
             base.OnActivated(e);
         }
