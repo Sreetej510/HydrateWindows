@@ -1,5 +1,6 @@
 ﻿using Hydrate.ViewModels;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -39,7 +40,8 @@ namespace Hydrate.Views.Main
 
         protected override void OnActivated(EventArgs e)
         {
-            _bindingContext.PopulateList.ListRefresh();
+            _bindingContext.UpdateTotalDrank();
+            Task.Run(() => _bindingContext.PopulateList.ListRefresh());
             base.OnActivated(e);
         }
     }
