@@ -11,6 +11,17 @@ namespace Hydrate.Models
 {
     public class ManipulateList : INotifyPropertyChanged
     {
+        #region Singleton
+
+        private static readonly ManipulateList _instance = new ManipulateList();
+
+        public static ManipulateList GetManipulateList()
+        {
+            return _instance;
+        }
+
+        #endregion Singleton
+
         private ObservableCollection<DrinkingListItem> _drinkingList;
 
         public ObservableCollection<DrinkingListItem> DrinkingList
@@ -37,6 +48,8 @@ namespace Hydrate.Models
 
         public int TotalDrank { get; private set; }
 
+        public readonly int Goal = 4;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -44,7 +57,7 @@ namespace Hydrate.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ManipulateList()
+        private ManipulateList()
         {
             DrinkingList = new ObservableCollection<DrinkingListItem> { };
             ListRefresh();

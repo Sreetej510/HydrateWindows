@@ -8,23 +8,29 @@ namespace Hydrate.Models
 {
     internal class Schedule
     {
-        private readonly int Goal;
+        private readonly static Schedule _instance = new Schedule();
+
+        public static Schedule GetSchedule()
+        {
+            return _instance;
+        }
+
+        private static int Goal;
 
         private int NeedToDrink;
-        private readonly ManipulateList ManipulateList;
+        private static ManipulateList ManipulateList;
 
         private double RemainingTime;
         private DrinkingListItem LatestItem;
         private double TimeRemaining;
         private double NextDrink;
-
         private readonly DateTime SleepTime = DateTime.ParseExact(DateTime.Now.ToString("dd-MM-yyyy") + " 23.59.00", "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture);
         private readonly DispatcherTimer TimerForCheck;
 
-        public Schedule(double goal, ManipulateList manipulateList)
+        private Schedule()
         {
-            Goal = (int)(goal * 1000);
-            ManipulateList = manipulateList;
+            ManipulateList = ManipulateList.GetManipulateList();
+            Goal = ManipulateList.Goal * 1000;
             TimerForCheck = new DispatcherTimer();
             TimerForCheck.Tick += new EventHandler(OnTick);
         }

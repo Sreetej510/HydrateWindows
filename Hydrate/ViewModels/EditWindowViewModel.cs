@@ -1,5 +1,6 @@
 ﻿using Hydrate.Models;
 using Hydrate.Services;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -28,6 +29,7 @@ namespace Hydrate.ViewModels
         private void EventDoneClicked(Window window, ManipulateList List)
         {
             EditItem.EditInfo(Quantity, Hour, Minutes, HasEaten);
+            Task.Run(() => Schedule.GetSchedule().StartSchedule());
             List.EditItem();
             window.Close();
         }
