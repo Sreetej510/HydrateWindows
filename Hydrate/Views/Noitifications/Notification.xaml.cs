@@ -23,13 +23,25 @@ namespace Hydrate.Views.Noitifications
             Application.Current.MainWindow.Show();
             Application.Current.MainWindow.Activate();
             _binding.Player.Stop();
-            Close();
+            closeAll();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             _binding.Player.Stop();
-            Close();
+            closeAll();
+        }
+
+        private void closeAll()
+        {
+            var allWindows = Application.Current.Windows;
+            foreach (Window window in allWindows)
+            {
+                if (window.GetType().Name != "MainWindow")
+                {
+                    window.Close();
+                };
+            }
         }
     }
 }

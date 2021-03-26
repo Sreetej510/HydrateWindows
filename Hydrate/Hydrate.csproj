@@ -2,11 +2,12 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net5.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Configurations>Debug;Release;Test</Configurations>
 		<Platforms>AnyCPU;x64</Platforms>
+		<ApplicationIcon>Resources\omegarts_white.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -18,10 +19,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="hydrate.json" />
 		<None Remove="Resources\Icons\close_black.png" />
 		<None Remove="Resources\Icons\edit_black.png" />
 		<None Remove="Resources\Icons\minimize_black.png" />
 		<None Remove="Resources\Icons\remove_black.png" />
+		<None Remove="Resources\Icons\snooze.png" />
 		<None Remove="Resources\omegarts_white.ico" />
 		<None Remove="Resources\QuantityIcons\150ml.png" />
 		<None Remove="Resources\QuantityIcons\200ml.png" />
@@ -36,6 +39,12 @@
 		<Resource Include="Resources\Icons\edit_black.png" />
 		<Resource Include="Resources\Icons\remove_black.png" />
 		<Resource Include="Resources\Icons\minimize_black.png" />
+		<Resource Include="Resources\Icons\snooze.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Content Include="hydrate.json">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 		<Content Include="Resources\QuantityIcons\150ml.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -66,7 +75,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FirebaseDatabase.net" Version="4.0.5" />
+		<PackageReference Include="Google.Cloud.Firestore" Version="2.3.0" />
 		<PackageReference Include="Unnoficial.Microsoft.Expression.Drawing" Version="1.0.0" />
 	</ItemGroup>
 </Project>

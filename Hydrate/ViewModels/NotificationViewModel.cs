@@ -23,6 +23,7 @@ namespace Hydrate.ViewModels
             Left2 = SystemParameters.PrimaryScreenWidth - 520;
 
             var count = Application.Current.Windows.Count;
+
             if (count > 5)
             {
                 Application.Current.Windows[count - 1].Close();

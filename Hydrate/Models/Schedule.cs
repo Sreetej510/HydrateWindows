@@ -8,7 +8,7 @@ namespace Hydrate.Models
 {
     internal class Schedule
     {
-        private readonly static Schedule _instance = new Schedule();
+        private readonly static Schedule _instance = new();
 
         public static Schedule GetSchedule()
         {
@@ -130,7 +130,7 @@ namespace Hydrate.Models
             Recheck(TimeRemaining);
         }
 
-        private void Recheck(double time)
+        public void Recheck(double time)
         {
             if (time < 0)
             {

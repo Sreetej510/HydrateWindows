@@ -1,4 +1,5 @@
-﻿using Hydrate.Views.Main;
+﻿using Hydrate.Models;
+using Hydrate.Views.Main;
 using System;
 using System.Drawing;
 using System.Windows;
@@ -32,6 +33,7 @@ namespace Hydrate
             NotifyIcon.DoubleClick += NotifyIcon_DoubleClick;
 
             NotifyIcon.ContextMenuStrip = new Forms.ContextMenuStrip();
+            NotifyIcon.ContextMenuStrip.Items.Add("Snooze for hour", Image.FromFile("Resources/Icons/snooze.png"), OnSnoozeClicked);
             NotifyIcon.ContextMenuStrip.Items.Add("Exit", Image.FromFile("Resources/Icons/close_black.png"), OnExitClicked);
             base.OnStartup(e);
         }
@@ -40,6 +42,12 @@ namespace Hydrate
         {
             NotifyIcon.Dispose();
             Shutdown();
+        }
+
+        private void OnSnoozeClicked(object sender, EventArgs e)
+        {
+            var schedule = Schedule.GetSchedule();
+            schedule.Recheck(60);
         }
 
         private void NotifyIcon_DoubleClick(object sender, EventArgs e)

@@ -30,7 +30,7 @@ namespace Hydrate.ViewModels
         {
             EditItem.EditInfo(Quantity, Hour, Minutes, HasEaten);
             Task.Run(() => Schedule.GetSchedule().StartSchedule());
-            List.EditItem();
+            List.EditItem(EditItem);
             window.Close();
         }
     }

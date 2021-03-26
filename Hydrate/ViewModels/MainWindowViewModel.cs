@@ -81,15 +81,15 @@ namespace Hydrate.ViewModels
         //ctor
         public MainWindowViewModel()
         {
-            Task.Run(() => { YesterdayDrank = new DatabaseSync().getOldRecord(); });
             PopulateList = ManipulateList.GetManipulateList();
+            Task.Run(() => { YesterdayDrank = PopulateList.getOldRecord(); });
             Goal = PopulateList.Goal;
             AddItem = new RelayCommand(p => true, p => EventAddItem(p));
             EditItem = new RelayCommand(p => true, p => EditItemModal());
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             ScheduleClass = Schedule.GetSchedule();
             UpdateTotalDrank(true);
-            Task.Run(() => new DatabaseSync().deleteOldRecord());
+            Task.Run(() => PopulateList.deleteOldRecord());
         }
 
         public void EventAddItem(object param)
@@ -113,7 +113,7 @@ namespace Hydrate.ViewModels
         public void UpdateTotalDrank(bool tempBool = false)
         {
             TotalDrank = PopulateList.TotalDrank;
-            Task.Run(() => new DatabaseSync().UploadTotalDrank(TotalDrank));
+            PopulateList.UploadTotalDrank();
             Task.Run(() => ScheduleClass.StartSchedule(tempBool));
         }
     }

@@ -16,6 +16,7 @@ namespace Hydrate.Views.Main
         public MainWindow()
         {
             InitializeComponent();
+            Visibility = Visibility.Hidden;
             DataContext = _bindingContext = new MainWindowViewModel();
         }
 
@@ -34,7 +35,6 @@ namespace Hydrate.Views.Main
 
         private void Close_Clicked(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState.Minimized;
             Hide();
         }
 

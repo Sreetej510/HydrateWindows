@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Google.Cloud.Firestore;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -22,6 +24,9 @@ namespace Hydrate.Models
 
         #endregion Singleton
 
+        private DocumentReference docRef;
+        private FirestoreDb db;
+
         private ObservableCollection<DrinkingListItem> _drinkingList;
 
         public ObservableCollection<DrinkingListItem> DrinkingList
@@ -35,6 +40,7 @@ namespace Hydrate.Models
         }
 
         private DateTime _nextDrinkTime;
+        private Dictionary<string, object> tempListDic;
 
         public DateTime NextDrinkTime
         {
@@ -59,27 +65,53 @@ namespace Hydrate.Models
 
         private ManipulateList()
         {
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"hydrate.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+
+            db = FirestoreDb.Create("hydrate-a8727");
+
+            var Today = DateTime.Now.ToString("dd-MM-yyyy");
+
+            docRef = db.Collection("hydrate").Document(Today);
             DrinkingList = new ObservableCollection<DrinkingListItem> { };
             ListRefresh();
         }
 
         public void ListRefresh()
         {
-            var dbSync = new DatabaseSync();
-            Task.Run(() => dbSync.Refresh()).Wait();
+            var snapshot = docRef.GetSnapshotAsync().Result;
+
+            if (!snapshot.Exists)
+            {
+                var Today = DateTime.Now.ToString("dd-MM-yyyy");
+                var yDay = DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy");
+                var p = db.Collection("hydrate").Document(Today).SetAsync(new Dictionary<string, object> { }).Result;
+                db.Collection("hydrate").Document(yDay).DeleteAsync();
+                snapshot = docRef.GetSnapshotAsync().Result;
+            }
+
+            tempListDic = snapshot.ToDictionary();
 
             var tempList = new List<DrinkingListItem> { };
 
             TotalDrank = 0;
 
-            foreach (var item in dbSync.SyncList)
+            foreach (var item in tempListDic)
             {
-                tempList.Add(new DrinkingListItem(item.EatenFood, int.Parse(item.DrankQuantity))
+                var key = item.Key;
+
+                var value = item.Value;
+
+                var dic = JsonConvert.SerializeObject(value);
+
+                var itemObj = JsonConvert.DeserializeObject<DatabaseItem>(dic);
+
+                tempList.Add(new DrinkingListItem(itemObj.EatenFood, int.Parse(itemObj.DrankQuantity))
                 {
-                    Id = item.Id,
-                    DrankTime = DateTime.ParseExact(item.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture),
+                    Id = itemObj.Id,
+                    DrankTime = DateTime.ParseExact(snapshot.Id + " " + itemObj.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture),
                 });
-                TotalDrank += int.Parse(item.DrankQuantity);
+                TotalDrank += int.Parse(itemObj.DrankQuantity);
             }
 
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
@@ -109,23 +141,49 @@ namespace Hydrate.Models
             };
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
 
-            new DatabaseSync().Upload(timeNow, quantityDrank, eaten);
+            var tempObj = new Dictionary<string, object>
+            {
+                { "Id" , timeNow.ToString("HHmmssfff") },
+                { "DrankQuantity" , value },
+                { "DrankTime" , timeNow.ToString("HH.mm.ss") },
+                { "EatenFood" , eaten }
+            };
+
+            tempListDic.Add(timeNow.ToString("HHmmssfff"), tempObj);
+
+            docRef.UpdateAsync(timeNow.ToString("HHmmssfff"), tempObj);
+
             UpdateTotalDrank();
         }
 
         public void DeleteItem(DrinkingListItem deleteItem)
         {
             var tempList = new List<DrinkingListItem>(DrinkingList);
-            new DatabaseSync().Delete(deleteItem.Id);
+
             tempList.Remove(deleteItem);
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+
+            tempListDic.Remove(deleteItem.Id);
+
+            docRef.SetAsync(tempListDic);
             UpdateTotalDrank();
         }
 
-        public void EditItem()
+        public void EditItem(DrinkingListItem editItem)
         {
             var tempList = new List<DrinkingListItem>(DrinkingList);
             DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+
+            var tempObj = new Dictionary<string, object>
+            {
+                { "Id" , editItem.Id },
+                { "DrankQuantity" , editItem.QuantityDrank.ToString() },
+                { "DrankTime" , editItem.DrankTime.ToString("HH.mm.ss") },
+                { "EatenFood" , editItem.Eaten }
+            };
+
+            docRef.UpdateAsync(editItem.Id, tempObj);
+
             UpdateTotalDrank();
         }
 
@@ -136,6 +194,37 @@ namespace Hydrate.Models
             {
                 TotalDrank += item.QuantityDrank;
             }
+        }
+
+        public void UploadTotalDrank()
+        {
+            var today = DateTime.Now.ToString("dd-MM-yyyy");
+            db.Collection("hydrate").Document("dailyProgress").UpdateAsync(today, TotalDrank);
+        }
+
+        internal int getOldRecord()
+        {
+            var yesterday = DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy");
+            var doc = db.Collection("hydrate").Document("dailyProgress").GetSnapshotAsync().Result;
+            var res = doc.GetValue<int>(yesterday);
+            return res;
+        }
+
+        internal void deleteOldRecord()
+        {
+            var today = DateTime.Now.ToString("dd-MM-yyyy");
+            var yesterday = DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy");
+            var doc = db.Collection("hydrate").Document("dailyProgress").GetSnapshotAsync().Result;
+
+            var todayValue = doc.GetValue<int>(today);
+            var yesterdayValue = doc.GetValue<int>(yesterday);
+            var obj = new Dictionary<string, object>
+            {
+                {today, todayValue },
+                {yesterday, yesterdayValue }
+            };
+
+            db.Collection("hydrate").Document("dailyProgress").SetAsync(obj);
         }
     }
 }
