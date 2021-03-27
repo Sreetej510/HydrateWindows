@@ -82,13 +82,13 @@ namespace Hydrate.ViewModels
         public MainWindowViewModel()
         {
             PopulateList = ManipulateList.GetManipulateList();
-            Task.Run(() => { YesterdayDrank = PopulateList.getOldRecord(); });
             Goal = PopulateList.Goal;
             AddItem = new RelayCommand(p => true, p => EventAddItem(p));
             EditItem = new RelayCommand(p => true, p => EditItemModal());
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             ScheduleClass = Schedule.GetSchedule();
             UpdateTotalDrank(true);
+            YesterdayDrank = PopulateList.getOldRecord();
             Task.Run(() => PopulateList.deleteOldRecord());
         }
 
