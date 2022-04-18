@@ -1,5 +1,4 @@
-﻿using Google.Cloud.Firestore;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,7 +6,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace Hydrate.Models
 {
@@ -24,10 +22,10 @@ namespace Hydrate.Models
 
         #endregion Singleton
 
-        private DocumentReference docRef;
-        private FirestoreDb db;
-
         private ObservableCollection<DrinkingListItem> _drinkingList;
+
+        public string Today { get; }
+        public string Yesterday { get; }
 
         public ObservableCollection<DrinkingListItem> DrinkingList
         {
@@ -53,6 +51,7 @@ namespace Hydrate.Models
         }
 
         public int TotalDrank { get; private set; }
+        public int YesterdayValue { get; private set; }
 
         public readonly int Goal = 4;
 
@@ -65,56 +64,64 @@ namespace Hydrate.Models
 
         private ManipulateList()
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"hydrate.json";
-            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            Database.DatabaseSet("hydrate", "hydrateData");
 
-            db = FirestoreDb.Create("hydrate-a8727");
+            Today = DateTime.Now.ToString("dd-MM-yyyy");
+            Yesterday = DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy");
 
-            var Today = DateTime.Now.ToString("dd-MM-yyyy");
-
-            docRef = db.Collection("hydrate").Document(Today);
+            deleteOldRecord();
             DrinkingList = new ObservableCollection<DrinkingListItem> { };
             ListRefresh();
         }
 
         public void ListRefresh()
         {
-            var snapshot = docRef.GetSnapshotAsync().Result;
 
-            if (!snapshot.Exists)
-            {
-                var Today = DateTime.Now.ToString("dd-MM-yyyy");
-                var yDay = DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy");
-                var p = db.Collection("hydrate").Document(Today).SetAsync(new Dictionary<string, object> { }).Result;
-                db.Collection("hydrate").Document(yDay).DeleteAsync();
-                snapshot = docRef.GetSnapshotAsync().Result;
-            }
-
-            tempListDic = snapshot.ToDictionary();
-
-            var tempList = new List<DrinkingListItem> { };
-
-            TotalDrank = 0;
-
-            foreach (var item in tempListDic)
-            {
-                var key = item.Key;
-
-                var value = item.Value;
-
-                var dic = JsonConvert.SerializeObject(value);
-
-                var itemObj = JsonConvert.DeserializeObject<DatabaseItem>(dic);
-
-                tempList.Add(new DrinkingListItem(itemObj.EatenFood, int.Parse(itemObj.DrankQuantity))
+            new Database().post("_id", Today, "", "find", true, "").onSuccessSync(data => {
+                tempListDic = data;
+                if(data != null)
                 {
-                    Id = itemObj.Id,
-                    DrankTime = DateTime.ParseExact(snapshot.Id + " " + itemObj.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture),
-                });
-                TotalDrank += int.Parse(itemObj.DrankQuantity);
-            }
 
-            DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+                    var keys = data.Keys;
+                    TotalDrank = 0;
+                    if (keys != null)
+                    {
+                        var tempList = new List<DrinkingListItem> { };
+
+                        tempListDic = data;
+
+                        foreach (var item in tempListDic)
+                        {
+                            var key = item.Key;
+
+                            var value = item.Value;
+
+                            var dic = JsonConvert.SerializeObject(value);
+
+                            var itemObj = JsonConvert.DeserializeObject<DatabaseItem>(dic);
+
+                            tempList.Add(new DrinkingListItem(itemObj.EatenFood, int.Parse(itemObj.DrankQuantity))
+                            {
+                                Id = itemObj.Id,
+                                DrankTime = DateTime.ParseExact(Today + " " + itemObj.DrankTime, "dd-MM-yyyy HH.mm.ss", CultureInfo.InvariantCulture),
+                            });
+                            TotalDrank += int.Parse(itemObj.DrankQuantity);
+                        }
+
+                        DrinkingList = new ObservableCollection<DrinkingListItem>(tempList.OrderByDescending(x => x.DrankTime));
+
+                    }
+                }
+                else
+                {
+                    DrinkingList = new ObservableCollection<DrinkingListItem>();
+                    TotalDrank = 0;
+                }
+
+            });
+
+
+            
         }
 
         public void AddItem(object param)
@@ -126,6 +133,7 @@ namespace Hydrate.Models
             int quantityDrank;
             if (value == "food")
             {
+                value = "0";
                 eaten = true;
                 quantityDrank = 0;
             }
@@ -151,7 +159,8 @@ namespace Hydrate.Models
 
             tempListDic.Add(timeNow.ToString("HHmmssfff"), tempObj);
 
-            docRef.UpdateAsync(timeNow.ToString("HHmmssfff"), tempObj);
+            var doc = Database.createFilter(timeNow.ToString("HHmmssfff"), tempObj);
+            new Database().post("_id", Today, "$set", "update", true, doc);
 
             UpdateTotalDrank();
         }
@@ -165,7 +174,8 @@ namespace Hydrate.Models
 
             tempListDic.Remove(deleteItem.Id);
 
-            docRef.SetAsync(tempListDic);
+            var document = Database.createFilter(deleteItem.Id, 1);
+            new Database().post("_id", Today, "$unset", "update", true, document);
             UpdateTotalDrank();
         }
 
@@ -182,8 +192,8 @@ namespace Hydrate.Models
                 { "EatenFood" , editItem.Eaten }
             };
 
-            docRef.UpdateAsync(editItem.Id, tempObj);
-
+            var document = Database.createFilter(editItem.Id, tempObj);
+            new Database().post("_id", Today, "$set", "update", true, document);
             UpdateTotalDrank();
         }
 
@@ -198,33 +208,37 @@ namespace Hydrate.Models
 
         public void UploadTotalDrank()
         {
-            var today = DateTime.Now.ToString("dd-MM-yyyy");
-            db.Collection("hydrate").Document("dailyProgress").UpdateAsync(today, TotalDrank);
+            var document = Database.createFilter(Today, TotalDrank);
+            new Database().post("_id", "dailyProgress", "$set", "update", true, document);
         }
 
-        internal int getOldRecord()
+        internal void getOldRecord()
         {
-            var yesterday = DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy");
-            var doc = db.Collection("hydrate").Document("dailyProgress").GetSnapshotAsync().Result;
-            var res = doc.GetValue<int>(yesterday);
-            return res;
+            new Database().post("_id", "dailyProgress", "", "find", true, "").onSuccessSync(data =>
+            {
+            if (data != null)
+                {
+                YesterdayValue = (int)(long)(data.GetValueOrDefault(Yesterday, (long)0));
+                }
+            });
         }
 
         internal void deleteOldRecord()
         {
-            var today = DateTime.Now.ToString("dd-MM-yyyy");
-            var yesterday = DateTime.Now.AddDays(-1).ToString("dd-MM-yyyy");
-            var doc = db.Collection("hydrate").Document("dailyProgress").GetSnapshotAsync().Result;
-
-            var todayValue = doc.GetValue<int>(today);
-            var yesterdayValue = doc.GetValue<int>(yesterday);
+            try
+            {
+                new Database().post("_id", Yesterday , "", "delete", true, "");
+                new Database().post("_id", Today, "$set", "update", true, "");
+            }
+            catch {}
+            getOldRecord();
             var obj = new Dictionary<string, object>
             {
-                {today, todayValue },
-                {yesterday, yesterdayValue }
+                {Today, TotalDrank },
+                {Yesterday, YesterdayValue }
             };
 
-            db.Collection("hydrate").Document("dailyProgress").SetAsync(obj);
+            new Database().post("_id", "dailyProgress", "$set", "replace", true, obj);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Configurations>Debug;Release;Test</Configurations>
@@ -19,7 +19,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="hydrate.json" />
 		<None Remove="Resources\Icons\close_black.png" />
 		<None Remove="Resources\Icons\edit_black.png" />
 		<None Remove="Resources\Icons\minimize_black.png" />
@@ -42,9 +41,6 @@
 		<Resource Include="Resources\Icons\snooze.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
-		<Content Include="hydrate.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 		<Content Include="Resources\QuantityIcons\150ml.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
@@ -75,7 +71,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Google.Cloud.Firestore" Version="2.3.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Unnoficial.Microsoft.Expression.Drawing" Version="1.0.0" />
 	</ItemGroup>
+
 </Project>

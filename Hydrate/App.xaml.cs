@@ -1,5 +1,6 @@
 ﻿using Hydrate.Models;
 using Hydrate.Views.Main;
+using Microsoft.Win32;
 using System;
 using System.Drawing;
 using System.Windows;
@@ -37,6 +38,7 @@ namespace Hydrate
             NotifyIcon.ContextMenuStrip.Items.Add("Exit", Image.FromFile("Resources/Icons/close_black.png"), OnExitClicked);
             base.OnStartup(e);
         }
+
 
         private void OnExitClicked(object sender, EventArgs e)
         {

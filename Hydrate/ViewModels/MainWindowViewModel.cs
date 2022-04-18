@@ -88,7 +88,7 @@ namespace Hydrate.ViewModels
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
             ScheduleClass = Schedule.GetSchedule();
             UpdateTotalDrank(true);
-            YesterdayDrank = PopulateList.getOldRecord();
+            YesterdayDrank = PopulateList.YesterdayValue;
             Task.Run(() => PopulateList.deleteOldRecord());
         }
 
