@@ -28,7 +28,7 @@ namespace Hydrate
             MainWindow = new MainWindow();
             MainWindow.Show();
 
-            NotifyIcon.Icon = new Icon("Resources/omegarts_white.ico");
+            NotifyIcon.Icon = new Icon("Resources/hydrate.ico");
             NotifyIcon.Text = "Hydrate";
             NotifyIcon.Visible = true;
             NotifyIcon.DoubleClick += NotifyIcon_DoubleClick;

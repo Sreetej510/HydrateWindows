@@ -7,7 +7,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<Configurations>Debug;Release;Test</Configurations>
 		<Platforms>AnyCPU;x64</Platforms>
-		<ApplicationIcon>Resources\omegarts_white.ico</ApplicationIcon>
+		<ApplicationIcon>Resources\hydrate.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -24,7 +24,6 @@
 		<None Remove="Resources\Icons\minimize_black.png" />
 		<None Remove="Resources\Icons\remove_black.png" />
 		<None Remove="Resources\Icons\snooze.png" />
-		<None Remove="Resources\omegarts_white.ico" />
 		<None Remove="Resources\QuantityIcons\150ml.png" />
 		<None Remove="Resources\QuantityIcons\200ml.png" />
 		<None Remove="Resources\QuantityIcons\250ml.png" />
@@ -41,10 +40,10 @@
 		<Resource Include="Resources\Icons\snooze.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
-		<Content Include="Resources\QuantityIcons\150ml.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<Content Include="Resources\hydrate.ico">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Resources\omegarts_white.ico">
+		<Content Include="Resources\QuantityIcons\150ml.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="Resources\QuantityIcons\150ml.png">
