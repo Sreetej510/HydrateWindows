@@ -30,7 +30,7 @@ namespace Hydrate.Models
         private Schedule()
         {
             ManipulateList = ManipulateList.GetManipulateList();
-            Goal = ManipulateList.Goal * 1000;
+            Goal = ManipulateList.Goal;
             TimerForCheck = new DispatcherTimer();
             TimerForCheck.Tick += new EventHandler(OnTick);
         }

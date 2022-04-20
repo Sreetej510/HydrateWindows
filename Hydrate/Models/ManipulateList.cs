@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -53,7 +54,7 @@ namespace Hydrate.Models
         public int TotalDrank { get; private set; }
         public int YesterdayValue { get; private set; }
 
-        public readonly int Goal = 4;
+        public int Goal = 4000;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -78,17 +79,17 @@ namespace Hydrate.Models
         {
 
             new Database().post("_id", Today, "", "find", true, "").onSuccessSync(data => {
-                tempListDic = data;
-                if(data != null)
+                Goal = (int)(long)data["goal"];
+                object log = data["log"];
+                tempListDic = JObject.FromObject(log).ToObject<Dictionary<string, object>>();
+                if (tempListDic != null)
                 {
 
-                    var keys = data.Keys;
+                    var keys = tempListDic.Keys;
                     TotalDrank = 0;
                     if (keys != null)
                     {
                         var tempList = new List<DrinkingListItem> { };
-
-                        tempListDic = data;
 
                         foreach (var item in tempListDic)
                         {
@@ -159,7 +160,7 @@ namespace Hydrate.Models
 
             tempListDic.Add(timeNow.ToString("HHmmssfff"), tempObj);
 
-            var doc = Database.createFilter(timeNow.ToString("HHmmssfff"), tempObj);
+            var doc = Database.createFilter("log." + timeNow.ToString("HHmmssfff"), tempObj);
             new Database().post("_id", Today, "$set", "update", true, doc);
 
             UpdateTotalDrank();
@@ -174,7 +175,7 @@ namespace Hydrate.Models
 
             tempListDic.Remove(deleteItem.Id);
 
-            var document = Database.createFilter(deleteItem.Id, 1);
+            var document = Database.createFilter("log." + deleteItem.Id, 1);
             new Database().post("_id", Today, "$unset", "update", true, document);
             UpdateTotalDrank();
         }
@@ -192,7 +193,7 @@ namespace Hydrate.Models
                 { "EatenFood" , editItem.Eaten }
             };
 
-            var document = Database.createFilter(editItem.Id, tempObj);
+            var document = Database.createFilter("log." + editItem.Id, tempObj);
             new Database().post("_id", Today, "$set", "update", true, document);
             UpdateTotalDrank();
         }
@@ -218,7 +219,7 @@ namespace Hydrate.Models
             {
             if (data != null)
                 {
-                YesterdayValue = (int)(long)(data.GetValueOrDefault(Yesterday, (long)0));
+                YesterdayValue = (int)(long)(data[Yesterday]);
                 }
             });
         }
@@ -227,18 +228,25 @@ namespace Hydrate.Models
         {
             try
             {
-                new Database().post("_id", Yesterday , "", "delete", true, "");
-                new Database().post("_id", Today, "$set", "update", true, "");
+                new Database().post("_id", Yesterday, "", "find", true, "").onSuccessSync(data =>
+                {
+                    if (data.Count != 0)
+                    {
+                        new Database().post("_id", Yesterday, "", "delete", true, "");
+                        var dic = new Dictionary<string, object>() {
+                            {"goal",4000 },
+                            {"log", new Dictionary<string, object>() }
+                        };
+                        new Database().post("_id", Today, "$set", "update", true, dic);
+                    }
+                });
+                
             }
             catch {}
             getOldRecord();
-            var obj = new Dictionary<string, object>
-            {
-                {Today, TotalDrank },
-                {Yesterday, YesterdayValue }
-            };
 
-            new Database().post("_id", "dailyProgress", "$set", "replace", true, obj);
+            var document = Database.createFilter(Today, TotalDrank);
+            new Database().post("_id", "dailyProgress", "$set", "update", true, document);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Hydrate.ViewModels
         {
             get
             {
-                double endAngle = -120.00 + ((double)TotalDrank / (Goal * 1000)) * 240;
+                double endAngle = -120.00 + ((double)TotalDrank /(Goal * 1000)) * 240;
 
                 if (endAngle >= 120)
                 {
@@ -82,7 +82,7 @@ namespace Hydrate.ViewModels
         public MainWindowViewModel()
         {
             PopulateList = ManipulateList.GetManipulateList();
-            Goal = PopulateList.Goal;
+            Goal = PopulateList.Goal/ 1000;
             AddItem = new RelayCommand(p => true, p => EventAddItem(p));
             EditItem = new RelayCommand(p => true, p => EditItemModal());
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
