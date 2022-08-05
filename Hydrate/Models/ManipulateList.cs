@@ -14,7 +14,7 @@ namespace Hydrate.Models
     {
         #region Singleton
 
-        private static readonly ManipulateList _instance = new ManipulateList();
+        private static ManipulateList _instance = new ManipulateList();
 
         public static ManipulateList GetManipulateList()
         {
@@ -25,8 +25,8 @@ namespace Hydrate.Models
 
         private ObservableCollection<DrinkingListItem> _drinkingList;
 
-        public string Today { get; }
-        public string Yesterday { get; }
+        private string Today;
+        private string Yesterday;
 
         public ObservableCollection<DrinkingListItem> DrinkingList
         {
@@ -40,6 +40,7 @@ namespace Hydrate.Models
 
         private DateTime _nextDrinkTime;
         private Dictionary<string, object> tempListDic;
+        private int _goal;
 
         public DateTime NextDrinkTime
         {
@@ -54,7 +55,14 @@ namespace Hydrate.Models
         public int TotalDrank { get; private set; }
         public int YesterdayValue { get; private set; }
 
-        public int Goal = 4000;
+        public int Goal
+        {
+            get { return _goal;  }
+            set { 
+                _goal = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -77,6 +85,11 @@ namespace Hydrate.Models
 
         public void ListRefresh()
         {
+
+            if(Today != DateTime.Now.ToString("dd-MM-yyyy")) {
+                _instance = new ManipulateList();
+                return;
+            }
 
             new Database().post("_id", Today, "", "find", true, "").onSuccessSync(data => {
                 Goal = (int)(long)data["goal"];
@@ -128,7 +141,6 @@ namespace Hydrate.Models
         public void AddItem(object param)
         {
             var timeNow = DateTime.Now;
-
             var value = param.ToString();
             bool eaten;
             int quantityDrank;
@@ -230,14 +242,15 @@ namespace Hydrate.Models
             {
                 new Database().post("_id", Yesterday, "", "find", true, "").onSuccessSync(data =>
                 {
-                    if (data.Count != 0)
+                    if (data != null)
                     {
                         new Database().post("_id", Yesterday, "", "delete", true, "");
                         var dic = new Dictionary<string, object>() {
-                            {"goal",4000 },
+                            {"_id", Today },
+                            {"goal",4500 },
                             {"log", new Dictionary<string, object>() }
                         };
-                        new Database().post("_id", Today, "$set", "update", true, dic);
+                        new Database().post("", "", "", "insert", true, dic);
                     }
                 });
                 

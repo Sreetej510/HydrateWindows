@@ -15,18 +15,20 @@ namespace Hydrate.ViewModels
         public bool HasEaten { get; set; }
 
         public ICommand DoneClicked { get; }
+        private ManipulateList List;
 
-        public EditWindowViewModel(DrinkingListItem editItem, Window window, ManipulateList List)
+        public EditWindowViewModel(DrinkingListItem editItem, Window window)
         {
+            List = ManipulateList.GetManipulateList();
             Quantity = editItem.QuantityDrank;
             EditItem = editItem;
             Hour = EditItem.DrankTime.Hour;
             Minutes = EditItem.DrankTime.Minute;
-            DoneClicked = new RelayCommand(p => true, p => EventDoneClicked(window, List));
+            DoneClicked = new RelayCommand(p => true, p => EventDoneClicked(window));
             HasEaten = EditItem.Eaten;
         }
 
-        private void EventDoneClicked(Window window, ManipulateList List)
+        private void EventDoneClicked(Window window)
         {
             EditItem.EditInfo(Quantity, Hour, Minutes, HasEaten);
             Task.Run(() => Schedule.GetSchedule().StartSchedule());

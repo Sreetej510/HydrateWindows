@@ -10,10 +10,10 @@ namespace Hydrate.Views.Main
     /// </summary>
     public partial class EditWindow : Window
     {
-        public EditWindow(DrinkingListItem editItem, ManipulateList manipulateList)
+        public EditWindow(DrinkingListItem editItem)
         {
             InitializeComponent();
-            DataContext = new EditWindowViewModel(editItem, window, manipulateList);
+            DataContext = new EditWindowViewModel(editItem, window);
         }
 
         private void CancelClicked(object sender, RoutedEventArgs e)

@@ -13,7 +13,7 @@ namespace Hydrate.Models
     {
         private Dictionary<string, object> body;
         private string path;
-        private Dictionary<string, object> result = new Dictionary<string, object>();
+        private Dictionary<string, object> result = null;
         private static bool serverDown = false;
         private static Dictionary<string, object> data;
 
@@ -29,7 +29,7 @@ namespace Hydrate.Models
             return result;
         }
 
-        private bool isConnectedToServer(String url,int port, int timeout)
+        private bool isConnectedToServer(String url, int port, int timeout)
         {
             try
             {
@@ -44,13 +44,13 @@ namespace Hydrate.Models
                 }
                 return false;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
         }
 
-        private string Post(string url, Dictionary<string,object> obj, bool forResult)
+        private string Post(string url, Dictionary<string, object> obj, bool forResult)
         {
             string Data;
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -69,7 +69,7 @@ namespace Hydrate.Models
                 Data = streamReader.ReadToEnd();
                 if (forResult)
                 {
-                result = JsonConvert.DeserializeObject<Dictionary<string, object>>(Data);
+                    result = JsonConvert.DeserializeObject<Dictionary<string, object>>(Data);
                 }
             }
             return Data;
@@ -79,11 +79,11 @@ namespace Hydrate.Models
         public void Run()
         {
             string url;
-            if (isConnectedToServer("pi.omegarts.de",1269, 1000) && !serverDown)
+            if (isConnectedToServer("ohio.omegarts.de", 1269, 1000) && !serverDown)
             {
-                url = "http://pi.omegarts.de:1269";
+                url = "http://ohio.omegarts.de:1269";
             }
-            else if (isConnectedToServer("local.omegarts.de",1269, 500) && !serverDown)
+            else if (isConnectedToServer("local.omegarts.de", 1269, 500) && !serverDown)
             {
                 url = "http://local.omegarts.de:1269";
             }
@@ -108,110 +108,155 @@ namespace Hydrate.Models
                 try
                 {
                     Post(url, body, forResult);
-                    new Thread(() => {
-                    try
+                    new Thread(() =>
                     {
-                        var obj = Database.createBody("find", "", false, "", "");
-                        var res = Post(url, obj, false);
-                        FileStream fileStream = File.Open(DATA_FILE, FileMode.Create);
-                        StreamWriter streamWriter = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
-                        streamWriter.Write(res);
-                        streamWriter.Flush();
-                        fileStream.Close();
-                    }
-                    catch (Exception) { }
+                        try
+                        {
+                            var obj = Database.createBody("find", "", false, "", "");
+                            var res = Post(url, obj, false);
+                            FileStream fileStream = File.Open(DATA_FILE, FileMode.Create);
+                            StreamWriter streamWriter = new StreamWriter(fileStream, System.Text.Encoding.UTF8);
+                            streamWriter.Write(res);
+                            streamWriter.Flush();
+                            fileStream.Close();
+                        }
+                        catch (Exception) { }
                     }).Start();
                 }
-                catch(Exception){}
-            
+                catch (Exception) { }
+
             }
             else
             {
+                Dictionary<string, Dictionary<string, object>> dataFull = new Dictionary<string, Dictionary<string, object>> { };
                 try
                 {
                     FileStream fileStream = File.Open(DATA_FILE, FileMode.OpenOrCreate);
                     StreamReader streamReader = new StreamReader(fileStream, System.Text.Encoding.UTF8);
-                    data = JsonConvert.DeserializeObject<Dictionary<string, object>>(streamReader.ReadLine());
+                    dataFull = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, object>>>(streamReader.ReadLine());
                     fileStream.Close();
                 }
-                catch(Exception){}
+                catch (Exception) { }
 
                 string query = (string)body.GetValueOrDefault("queryType");
 
                 try
                 {
+                    if (query == "find" && dataFull != null)
+                    {
+                        var filter = (Dictionary<string, object>)body.GetValueOrDefault("filter");
+                        string id = (string)filter.First().Value;
 
-                
-                if(query == "find" && data != null)
+                        string tmpStr = JsonConvert.SerializeObject(dataFull[id]);
+                        result = JsonConvert.DeserializeObject<Dictionary<string, object>>(tmpStr);
+                    }
+                    else if (query == "update" && dataFull != null)
+                    {
+                        var filter = (Dictionary<string, object>)body.GetValueOrDefault("filter");
+                        string id = (string)filter.First().Value;
+
+                        string tmpStr = JsonConvert.SerializeObject(dataFull[id]);
+
+                        var valObj1 = JsonConvert.DeserializeObject<Dictionary<string, Object>>(tmpStr);
+                        var valObj2 = new Dictionary<string, Dictionary<string, Object>> { };
+                        bool logUpdate = false;
+                        string opVal = (string)(body.GetValueOrDefault("operator"));
+
+                        var value = (Dictionary<string, object>)body.GetValueOrDefault("document");
+                        string name = value.First().Key;
+                        if (name.Contains("log"))
+                        {
+                            valObj2 = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, Object>>>(tmpStr);
+                            logUpdate = true;
+                        }
+
+                        if (opVal == "$set")
+                        {
+                            if (logUpdate)
+                            {
+                                valObj2["log"][name.Split(".")[0]] = value.First().Value;
+                            }
+                            else
+                            {
+                                valObj1[name] = value.First().Value;
+                            }
+                        }
+                        else
+                        {
+                            if (logUpdate)
+                            {
+                                valObj2["log"].Remove(name.Split(".")[0]);
+                            }
+                            else
+                            {
+                                valObj1.Remove(name);
+                            }
+                        }
+
+                        if (logUpdate)
+                        {
+                            dataFull[id] = JsonConvert.DeserializeObject<Dictionary<string, Object>>(JsonConvert.SerializeObject(valObj2));
+                        }
+                        else
+                        {
+                            dataFull[id] = valObj1;
+                        }
+
+                        try
+                        {
+                            FileStream fs = File.Open(DATA_FILE, FileMode.Create);
+                            StreamWriter streamWriter = new StreamWriter(fs, System.Text.Encoding.UTF8);
+                            string writeData = JsonConvert.SerializeObject(dataFull);
+                            streamWriter.Write(JsonConvert.SerializeObject(dataFull));
+                            streamWriter.Flush();
+                            fs.Close();
+                        }
+                        catch (Exception e) {
+                            Console.WriteLine(e.Message);
+                            if (e.Message == "je")
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+                        }
+
+                        new Thread(() =>
+                        {
+                            try
+                            {
+                                FileStream fs = File.Open(POST_FILE, FileMode.Append);
+                                StreamWriter streamWriter = new StreamWriter(fs, System.Text.Encoding.UTF8);
+                                streamWriter.WriteLine(JsonConvert.SerializeObject(body));
+                                streamWriter.Flush();
+                                fs.Close();
+                            }
+                            catch (Exception) {}
+                        }).Start();
+
+                    }
+                }catch (Exception e)
                 {
-                    var filter = (Dictionary<string, object>)body.GetValueOrDefault("filter");
-                    string id = (string)filter.First().Value;
-
-                    string tmpStr = JsonConvert.SerializeObject(data.GetValueOrDefault(id));
-                    result = JsonConvert.DeserializeObject<Dictionary<string,object>>(tmpStr);
-                }else if(query == "update" && data != null)
-                {
-                    var filter = (Dictionary<string, object>)body.GetValueOrDefault("filter");
-                    string id = (string)filter.First().Value;
-
-                    string tmpStr = JsonConvert.SerializeObject(data.GetValueOrDefault(id));
-                    var valObj = JsonConvert.DeserializeObject<Dictionary<string, object>>(tmpStr);
-
-                    string opVal = (string)(body.GetValueOrDefault("operator"));
-
-                    var value = (Dictionary<string, object>)body.GetValueOrDefault("document");
-                    string name = value.First().Key;
-
-                    if (opVal == "$set")
+                    Console.WriteLine(e.Message);
+                    if (e.Message == "je")
                     {
-                        valObj[name] = value.First().Value;
+                        Console.WriteLine(e.Message);
                     }
-                    else
-                    {
-                        valObj.Remove(name);
-                    }
-                    data[id] = valObj;
-
-                    try
-                    {
-                        FileStream fs = File.Open(DATA_FILE, FileMode.Create);
-                        StreamWriter streamWriter = new StreamWriter(fs, System.Text.Encoding.UTF8);
-                        streamWriter.Write(JsonConvert.SerializeObject(data));
-                        streamWriter.Flush();
-                        fs.Close();
-                    }
-                    catch(Exception){}
-
-                    new Thread(() => {
-                    try
-                    {
-                        FileStream fs = File.Open(POST_FILE, FileMode.Append);
-                        StreamWriter streamWriter = new StreamWriter(fs, System.Text.Encoding.UTF8);
-                        streamWriter.WriteLine(JsonConvert.SerializeObject(body));
-                        streamWriter.Flush();
-                        fs.Close();
-                    }
-                    catch (Exception) { }
-                    }).Start();
-
                 }
-                }
-                catch (Exception) { }
 
                 new Thread(() =>
                 {
-                    serverDown = !(isConnectedToServer("local.omegarts.de", 1269, 500) || isConnectedToServer("pi.omegarts.de", 1269, 1000));
+                    serverDown = !(isConnectedToServer("local.omegarts.de", 1269, 500) || isConnectedToServer("ohio.omegarts.de", 1269, 1000));
                     if (!serverDown)
                     {
-                        if (isConnectedToServer("pi.omegarts.de", 1269, 1000))
+                        if (isConnectedToServer("ohio.omegarts.de", 1269, 1000))
                         {
-                            url = "http://pi.omegarts.de:1269";
+                            url = "http://ohio.omegarts.de:1269";
                         }
                         else if (isConnectedToServer("local.omegarts.de", 1269, 500))
                         {
                             url = "http://local.omegarts.de:1269";
                         }
-                        new Thread(() => {
+                        new Thread(() =>
+                        {
                             try
                             {
                                 FileStream fileStream = File.Open(POST_FILE, FileMode.OpenOrCreate);
@@ -224,12 +269,13 @@ namespace Hydrate.Models
                                 }
                                 fileStream.SetLength(0);
                                 fileStream.Close();
-                            }catch(Exception){}
+                            }
+                            catch (Exception) { }
 
                         }).Start();
                     }
                 }).Start();
-                
+
             }
 
         }

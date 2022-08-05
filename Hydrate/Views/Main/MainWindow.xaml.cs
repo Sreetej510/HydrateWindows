@@ -12,12 +12,12 @@ namespace Hydrate.Views.Main
     public partial class MainWindow : Window
     {
         private readonly MainWindowViewModel _bindingContext;
-
         public MainWindow()
         {
             InitializeComponent();
             Visibility = Visibility.Hidden;
-            DataContext = _bindingContext = new MainWindowViewModel();
+            DataContext = _bindingContext = MainWindowViewModel.GetMainWindowViewModel();
+
         }
 
         private void Label_MouseDown(object sender, MouseButtonEventArgs e)
@@ -48,7 +48,9 @@ namespace Hydrate.Views.Main
         {
             _bindingContext.TotalDrank = _bindingContext.PopulateList.TotalDrank;
             _bindingContext.PopulateList.ListRefresh();
+
             base.OnActivated(e);
         }
+
     }
 }

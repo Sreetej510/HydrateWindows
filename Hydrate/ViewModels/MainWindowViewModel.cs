@@ -10,6 +10,17 @@ namespace Hydrate.ViewModels
 {
     internal class MainWindowViewModel : INotifyPropertyChanged
     {
+        #region Singleton
+
+        private static readonly MainWindowViewModel _instance = new MainWindowViewModel();
+
+        public static MainWindowViewModel GetMainWindowViewModel()
+        {
+            return _instance;
+        }
+
+        #endregion Singleton
+
         private ManipulateList _populateList;
 
         public ManipulateList PopulateList
@@ -38,7 +49,7 @@ namespace Hydrate.ViewModels
         {
             get
             {
-                double endAngle = -120.00 + ((double)TotalDrank /(Goal * 1000)) * 240;
+                double endAngle = -120.00 + ((double)TotalDrank /PopulateList.Goal) * 240;
 
                 if (endAngle >= 120)
                 {
@@ -47,8 +58,6 @@ namespace Hydrate.ViewModels
                 return endAngle;
             }
         }
-
-        public double Goal { get; set; }
 
         private int _totalDrank;
 
@@ -79,10 +88,9 @@ namespace Hydrate.ViewModels
         }
 
         //ctor
-        public MainWindowViewModel()
+        private MainWindowViewModel()
         {
             PopulateList = ManipulateList.GetManipulateList();
-            Goal = PopulateList.Goal/ 1000;
             AddItem = new RelayCommand(p => true, p => EventAddItem(p));
             EditItem = new RelayCommand(p => true, p => EditItemModal());
             DeleteItem = new RelayCommand(p => true, p => EventDeleteItem());
@@ -100,7 +108,7 @@ namespace Hydrate.ViewModels
 
         public void EditItemModal()
         {
-            var editPage = new EditWindow(SelectedItem, PopulateList);
+            var editPage = new EditWindow(SelectedItem);
             editPage.ShowDialog();
         }
 

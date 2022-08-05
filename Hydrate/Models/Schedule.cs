@@ -30,13 +30,14 @@ namespace Hydrate.Models
         private Schedule()
         {
             ManipulateList = ManipulateList.GetManipulateList();
-            Goal = ManipulateList.Goal;
             TimerForCheck = new DispatcherTimer();
             TimerForCheck.Tick += new EventHandler(OnTick);
         }
 
         public void StartSchedule(bool refresh = false)
         {
+            Goal = ManipulateList.Goal;
+
             if (refresh)
             {
                 ManipulateList.ListRefresh();

@@ -25,7 +25,7 @@
                 </ed:Arc.Effect>
             </ed:Arc>
             <Label Content="{Binding TotalDrank}" ContentStringFormat="{} {0} ml" FontSize="50" FontFamily="Comic Sans MS" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <Label Content="{Binding Goal}" ContentStringFormat="{}{0:F2} L" FontSize="30" FontFamily="Comic Sans MS" Margin="0,0,10,40" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+            <Label Content="{Binding PopulateList.Goal}" ContentStringFormat="{}{0} ml" FontSize="30" FontFamily="Comic Sans MS" Margin="0,0,10,40" VerticalAlignment="Bottom" HorizontalAlignment="Right" />
         </Grid>
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Height="90" HorizontalAlignment="Left" Width="400" Margin="100,470,0,0">
@@ -72,23 +72,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
 
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <!-- Edit Button Binding-->
-                    <MenuItem  Height="30" Header="Edit" Command="{Binding EditItem}">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Icons/edit_black.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-
-                    <!-- Delete Button Binding-->
-                    <MenuItem  Height="30" Header="Remove" Command="{Binding DeleteItem}">
-                        <MenuItem.Icon>
-                            <Image Source="/Resources/Icons/remove_black.png" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ListView.ContextMenu>
+            
 
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -98,6 +82,24 @@
                             <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="8*" />
                         </Grid.ColumnDefinitions>
+
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <!-- Edit Button Binding-->
+                                <MenuItem  Height="30" Header="Edit" Command="{Binding EditItem}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Icons/edit_black.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+
+                                <!-- Delete Button Binding-->
+                                <MenuItem  Height="30" Header="Remove" Command="{Binding DeleteItem}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/Resources/Icons/remove_black.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
 
                         <Image Grid.Column="0" Source="{Binding ImageSource}" />
 
